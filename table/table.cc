@@ -14,7 +14,7 @@
 #include "table/format.h"
 #include "table/two_level_iterator.h"
 #include "util/coding.h"
-
+#include <iostream>
 namespace leveldb {
 
 struct Table::Rep {
@@ -48,11 +48,13 @@ Status Table::Open(const Options& options,
   Slice footer_input;
   Status s = file->Read(size - Footer::kEncodedLength, Footer::kEncodedLength,
                         &footer_input, footer_space);
+  //SU security
   char security_space[5];
   Slice security_input;
   s = file->Read(size-Footer::kEncodedLength-5,5,&security_input,security_space);
   if (!s.ok()) return s;
-  printf("Input table open and %s\n",security_input.data());
+  std::cout << "input " << security_input.ToString() << std::endl;
+  //SU security end
 
   Footer footer;
   s = footer.DecodeFrom(&footer_input);
