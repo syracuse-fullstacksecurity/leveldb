@@ -172,6 +172,14 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle) {
   block->Reset();
 }
 
+void TableBuilder::WriteSecurity() {
+  printf("enter %s\n",__func__);
+  Rep *r = rep_;
+  char somedata[100] = "hello";
+  r->status = r->file->Append(Slice(somedata,5));
+  r->offset += 5;
+}
+
 void TableBuilder::WriteRawBlock(const Slice& block_contents,
                                  CompressionType type,
                                  BlockHandle* handle) {
@@ -237,6 +245,7 @@ Status TableBuilder::Finish() {
     }
     WriteBlock(&r->index_block, &index_block_handle);
   }
+  WriteSecurity();
 
   // Write footer
   if (ok()) {
