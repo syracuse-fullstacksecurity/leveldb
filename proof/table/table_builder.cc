@@ -173,7 +173,8 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle) {
 }
 
 void TableBuilder::WriteSecurity() {
-  printf("enter %s\n",__func__);
+  static int i =0;
+  printf("enter %s and count=%d\n",__func__,++i);
   Rep *r = rep_;
   char somedata[100] = "hello";
   r->status = r->file->Append(Slice(somedata,5));

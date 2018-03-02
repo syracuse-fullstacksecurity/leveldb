@@ -87,8 +87,10 @@ void MemTable::Add(SequenceNumber s, ValueType type,
   //  key bytes    : char[internal_key.size()]
   //  value_size   : varint32 of value.size()
   //  value bytes  : char[value.size()]
+  static int i = 0;
   size_t key_size = key.size();
   size_t val_size = value.size();
+  printf("MemTable add %d\n",++i);
   size_t internal_key_size = key_size + 8;
   const size_t encoded_len =
       VarintLength(internal_key_size) + internal_key_size +
