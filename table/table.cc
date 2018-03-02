@@ -48,7 +48,11 @@ Status Table::Open(const Options& options,
   Slice footer_input;
   Status s = file->Read(size - Footer::kEncodedLength, Footer::kEncodedLength,
                         &footer_input, footer_space);
+  char security_space[5];
+  Slice security_input;
+  s = file->Read(size-Footer::kEncodedLength-5,5,&security_input,security_space);
   if (!s.ok()) return s;
+  printf("Input table open and %s\n",security_input.data());
 
   Footer footer;
   s = footer.DecodeFrom(&footer_input);
