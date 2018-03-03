@@ -76,7 +76,7 @@ case "$TARGET_OS" in
     CYGWIN_*)
         PLATFORM=OS_LINUX
         COMMON_FLAGS="$MEMCMP_FLAG -lpthread -DOS_LINUX -DCYGWIN"
-        PLATFORM_LDFLAGS="-lpthread"
+        PLATFORM_LDFLAGS="-lpthread -lverify"
         PORT_FILE=port/port_posix.cc
         ;;
     Darwin)
@@ -90,7 +90,7 @@ case "$TARGET_OS" in
     Linux)
         PLATFORM=OS_LINUX
         COMMON_FLAGS="$MEMCMP_FLAG -pthread -DOS_LINUX"
-        PLATFORM_LDFLAGS="-pthread"
+        PLATFORM_LDFLAGS="-pthread -lverify"
         PORT_FILE=port/port_posix.cc
         ;;
     SunOS)

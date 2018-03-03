@@ -8,7 +8,7 @@
 #include "leveldb/env.h"
 #include "leveldb/iterator.h"
 #include "util/coding.h"
-
+#include "../../include/verifier.h"
 namespace leveldb {
 
 static Slice GetLengthPrefixedSlice(const char* data) {
@@ -88,6 +88,7 @@ void MemTable::Add(SequenceNumber s, ValueType type,
   //  value_size   : varint32 of value.size()
   //  value bytes  : char[value.size()]
   static int i = 0;
+  verifier_put();
   size_t key_size = key.size();
   size_t val_size = value.size();
   printf("MemTable add %d\n",++i);
