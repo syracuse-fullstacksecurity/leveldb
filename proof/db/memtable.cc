@@ -88,7 +88,7 @@ void MemTable::Add(SequenceNumber s, ValueType type,
   //  value_size   : varint32 of value.size()
   //  value bytes  : char[value.size()]
   static int i = 0;
-  verifier_put();
+  verifier_put(key,value);
   size_t key_size = key.size();
   size_t val_size = value.size();
   printf("MemTable add %d\n",++i);
