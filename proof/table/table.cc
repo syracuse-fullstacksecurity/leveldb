@@ -53,7 +53,6 @@ Status Table::Open(const Options& options,
   Slice security_input;
   s = file->Read(size-Footer::kEncodedLength-5,5,&security_input,security_space);
   if (!s.ok()) return s;
-  std::cout << "input " << security_input.ToString() << std::endl;
   //SU security end
 
   Footer footer;

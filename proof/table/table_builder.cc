@@ -90,6 +90,10 @@ Status TableBuilder::ChangeOptions(const Options& options) {
 }
 
 void TableBuilder::Add(const Slice& key, const Slice& value) {
+  //SU hack
+  static int i =0;
+  //printf("%s and i=%d\n",__func__,++i); 
+  //SU end
   Rep* r = rep_;
   assert(!r->closed);
   if (!ok()) return;
@@ -174,7 +178,6 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle) {
 
 void TableBuilder::WriteSecurity() {
   static int i =0;
-  printf("enter %s and count=%d\n",__func__,++i);
   Rep *r = rep_;
   char somedata[100] = "hello";
   r->status = r->file->Append(Slice(somedata,5));

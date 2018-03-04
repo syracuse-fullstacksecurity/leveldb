@@ -3,7 +3,7 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "db/db_impl.h"
-
+#include "../include/verifier.h"
 #include <algorithm>
 #include <set>
 #include <string>
@@ -423,6 +423,7 @@ Status DBImpl::RecoverLogFile(uint64_t log_number, bool last_log,
       mem = new MemTable(internal_comparator_);
       mem->Ref();
     }
+    printf("write to mem in recover\n");
     status = WriteBatchInternal::InsertInto(&batch, mem);
     MaybeIgnoreError(&status);
     if (!status.ok()) {
@@ -495,7 +496,14 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
   Iterator* iter = mem->NewIterator();
   Log(options_.info_log, "Level-0 table #%llu: started",
       (unsigned long long) meta.number);
-
+  //SU hack
+  static int i = 0;
+  iter->SeekToFirst();
+  while(iter->Valid()) {
+	i++;
+	iter->Next();
+  } 
+  //printf("WriteLevel0Table record count=%d\n",i); 
   Status s;
   {
     mutex_.Unlock();
@@ -885,6 +893,10 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
 }
 
 Status DBImpl::DoCompactionWork(CompactionState* compact) {
+  //SU hack
+  static int i=0;
+  printf("do compaction triggered\n");
+  //SU end
   const uint64_t start_micros = env_->NowMicros();
   int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
 
@@ -992,6 +1004,8 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
         compact->current_output()->smallest.DecodeFrom(key);
       }
       compact->current_output()->largest.DecodeFrom(key);
+      //SU hack
+      //printf("do compaction %d\n",++i);
       compact->builder->Add(key, input->value());
 
       // Close output file if it is big enough
@@ -1367,6 +1381,8 @@ Status DBImpl::MakeRoomForWrite(bool force) {
       logfile_ = lfile;
       logfile_number_ = new_log_number;
       log_ = new log::Writer(lfile);
+      //SU hack
+      verifier_flip_mem();
       imm_ = mem_;
       has_imm_.Release_Store(imm_);
       mem_ = new MemTable(internal_comparator_);
@@ -1490,7 +1506,8 @@ DB::~DB() { }
 Status DB::Open(const Options& options, const std::string& dbname,
                 DB** dbptr) {
   *dbptr = NULL;
-
+  //SU hack
+  verifier_init();
   DBImpl* impl = new DBImpl(options, dbname);
   impl->mutex_.Lock();
   VersionEdit edit;
