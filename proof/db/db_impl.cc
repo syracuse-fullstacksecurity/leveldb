@@ -497,13 +497,27 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
   Log(options_.info_log, "Level-0 table #%llu: started",
       (unsigned long long) meta.number);
   //SU hack
+  unsigned long start = 1<<30;
+  unsigned long end = 0;
   static int i = 0;
   iter->SeekToFirst();
+  std::vector<RECORD> t;
   while(iter->Valid()) {
-	i++;
-	iter->Next();
+    const uint64_t anum = DecodeFixed64(iter->key().data() + iter->key().size() - 8);
+    const uint64_t seq = anum >> 8;
+    if (seq < start) start = seq;
+    if (seq > end) end = seq;
+    i++;
+    pRECORD r = new RECORD;
+    r->key = Slice(iter->key().data(),iter->key().size()-8);
+    r->val = iter->value();
+    r->seq = seq;
+    r->type = 0;
+    t.push_back(*r);
+    iter->Next();
   } 
-  //printf("WriteLevel0Table record count=%d\n",i); 
+  printf("WriteLevel0Table record count=%d,start=%lu,end=%lu, memsize=%d\n",i,start,end,t.size()); 
+  verifier_compact_memtable(t);
   Status s;
   {
     mutex_.Unlock();

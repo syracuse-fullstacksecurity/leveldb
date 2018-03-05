@@ -4,7 +4,7 @@
 #include "leveldb/slice.h"
 using namespace leveldb;
 typedef struct {
-	char rep_[32];
+	unsigned char rep_[32];
 } DIGEST,*pDIGEST;
 typedef struct digest_state {
     unsigned long last;
@@ -16,10 +16,19 @@ typedef struct digest_state {
     unsigned long imm_ts_end;
     std::vector<std::vector<DIGEST> > LN;
 } STATE, *pSTATE;
+
+typedef struct record{
+  Slice key;
+  unsigned long seq;
+  unsigned long type;
+  Slice val;
+} RECORD, *pRECORD;
+
 int verifier_init();
 int verifier_flip_mem();
 int verifier_put(const Slice& key, unsigned long seq, const Slice& value);
 int verifier_get();
-int verifier_compact_memtable();
+int verifier_compact_memtable(std::vector<RECORD>& t);
 int verifier_compaction();
+
 #endif
