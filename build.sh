@@ -1,4 +1,4 @@
-cd verifier
+cd blockchain_agent
 make clean
 make
 sudo cp verifier /usr/lib/libverify.so
