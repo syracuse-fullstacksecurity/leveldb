@@ -57,6 +57,7 @@ bool myfunction (const RECORD& i,const RECORD& j) { return (i.seq < j.seq); }
 
 int verifier_compact_memtable(std::vector<RECORD>& t) {
   if (t.size()==0) return 0; 
+  //sort to time-ordered
   std::sort(t.begin(),t.end(),myfunction);
   unsigned char resHash[DIGEST_SIZE];
   sha3_update((const unsigned char *)t[0].key.data(),t[0].key.size());
@@ -70,13 +71,15 @@ int verifier_compact_memtable(std::vector<RECORD>& t) {
   }
   for(int i=0;i<DIGEST_SIZE;i++) {
     if (resHash[i] != gSTATE.imm->rep_[i]) {
-  printf("in %s and firstis=%lu and last=%lu,imm_start=%lu,imm_end=%lu\n",__func__,t[0].seq,t[t.size()-1].seq,gSTATE.imm_ts_start,gSTATE.imm_ts_end);
-  std::cout << t[0].key.ToString() << std::endl;
+      printf("in %s and firstis=%lu and last=%lu,imm_start=%lu,imm_end=%lu\n",__func__,t[0].seq,t[t.size()-1].seq,gSTATE.imm_ts_start,gSTATE.imm_ts_end);
+      std::cout << t[0].key.ToString() << std::endl;
       std::cout << "different" << std::endl;
       break;
     }
   }
+  //assert! must be equal 
   //TODO minor bug: sometime the verification failed
 }
+
 int verifier_compaction() {
 }

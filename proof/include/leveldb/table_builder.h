@@ -17,7 +17,7 @@
 #include "leveldb/export.h"
 #include "leveldb/options.h"
 #include "leveldb/status.h"
-
+#include "../include/verifier.h"
 namespace leveldb {
 
 class BlockBuilder;
@@ -79,6 +79,8 @@ class LEVELDB_EXPORT TableBuilder {
   bool ok() const { return status().ok(); }
   void WriteBlock(BlockBuilder* block, BlockHandle* handle);
   void WriteRawBlock(const Slice& data, CompressionType, BlockHandle* handle);
+
+  //SU hack
   void WriteSecurity();
 
   struct Rep;

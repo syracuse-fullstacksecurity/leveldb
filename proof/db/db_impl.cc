@@ -423,7 +423,6 @@ Status DBImpl::RecoverLogFile(uint64_t log_number, bool last_log,
       mem = new MemTable(internal_comparator_);
       mem->Ref();
     }
-    printf("write to mem in recover\n");
     status = WriteBatchInternal::InsertInto(&batch, mem);
     MaybeIgnoreError(&status);
     if (!status.ok()) {
@@ -518,6 +517,8 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
   } 
   printf("WriteLevel0Table record count=%d,start=%lu,end=%lu, memsize=%d\n",i,start,end,t.size()); 
   verifier_compact_memtable(t);
+  //SU hack end
+
   Status s;
   {
     mutex_.Unlock();
@@ -544,6 +545,7 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
     }
     edit->AddFile(level, meta.number, meta.file_size,
                   meta.smallest, meta.largest);
+    //printf("write to level %d with file number %d\n",level,meta.number);
   }
 
   CompactionStats stats;
@@ -1397,6 +1399,7 @@ Status DBImpl::MakeRoomForWrite(bool force) {
       log_ = new log::Writer(lfile);
       //SU hack
       verifier_flip_mem();
+      //SU hack end
       imm_ = mem_;
       has_imm_.Release_Store(imm_);
       mem_ = new MemTable(internal_comparator_);
@@ -1522,6 +1525,7 @@ Status DB::Open(const Options& options, const std::string& dbname,
   *dbptr = NULL;
   //SU hack
   verifier_init();
+  //SU hack end
   DBImpl* impl = new DBImpl(options, dbname);
   impl->mutex_.Lock();
   VersionEdit edit;

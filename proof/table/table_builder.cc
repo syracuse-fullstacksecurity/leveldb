@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+#include "../include/verifier.h"
+#include "../include/sha3.h"
 #include "leveldb/table_builder.h"
 
 #include <assert.h>
@@ -28,7 +30,12 @@ struct TableBuilder::Rep {
   std::string last_key;
   int64_t num_entries;
   bool closed;          // Either Finish() or Abandon() has been called.
-  FilterBlockBuilder* filter_block;
+  FilterBlockBuilder*   filter_block;
+  //SU hack
+  DIGEST cur;
+  std::vector<DIGEST> diBlocks;
+  DIGEST entire;
+  //SU end
 
   // We do not emit the index entry for a block until we have seen the
   // first key for the next data block.  This allows us to use shorter
@@ -64,6 +71,11 @@ TableBuilder::TableBuilder(const Options& options, WritableFile* file)
     : rep_(new Rep(options, file)) {
   if (rep_->filter_block != NULL) {
     rep_->filter_block->StartBlock(0);
+    //SU hack
+    memset(&rep_->cur,0,sizeof(DIGEST));
+    memset(&rep_->entire,0,sizeof(DIGEST));
+    rep_->diBlocks.clear();
+    //SU hack end
   }
 }
 
@@ -117,10 +129,21 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
   r->last_key.assign(key.data(), key.size());
   r->num_entries++;
   r->data_block.Add(key, value);
-
+  //SU hack
+  unsigned char* tmp = new unsigned char[key.size()+value.size()+DIGEST_SIZE];
+  memcpy(tmp,rep_->cur.rep_,DIGEST_SIZE);
+  memcpy(tmp+DIGEST_SIZE,key.data(),key.size());
+  memcpy(tmp+DIGEST_SIZE+key.size(),value.data(),value.size());
+  sha3_update(tmp,key.size()+value.size()+DIGEST_SIZE);
+  sha3_final(rep_->cur.rep_,DIGEST_SIZE);
+  delete tmp;
+  //SU hack end
   const size_t estimated_block_size = r->data_block.CurrentSizeEstimate();
   if (estimated_block_size >= r->options.block_size) {
     Flush();
+    //SU hack
+    rep_->diBlocks.push_back(rep_->cur);
+    //SU hack end
   }
 }
 
@@ -176,13 +199,22 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle) {
   block->Reset();
 }
 
+
+//SU hack
 void TableBuilder::WriteSecurity() {
   static int i =0;
   Rep *r = rep_;
-  char somedata[100] = "hello";
-  r->status = r->file->Append(Slice(somedata,5));
-  r->offset += 5;
+  for(int i=0;i<r->diBlocks.size();i++) {
+    unsigned char tmp[2*DIGEST_SIZE];
+    memcpy(tmp,r->entire.rep_,DIGEST_SIZE);
+    memcpy(tmp+DIGEST_SIZE,r->diBlocks[i].rep_,DIGEST_SIZE);
+    sha3_update(tmp,2*DIGEST_SIZE);
+    sha3_final(rep_->entire.rep_,DIGEST_SIZE);
+    r->status = r->file->Append(Slice((const char*)r->diBlocks[i].rep_,DIGEST_SIZE));
+    r->offset += DIGEST_SIZE;
+  }
 }
+//SU hack end
 
 void TableBuilder::WriteRawBlock(const Slice& block_contents,
                                  CompressionType type,
@@ -249,7 +281,10 @@ Status TableBuilder::Finish() {
     }
     WriteBlock(&r->index_block, &index_block_handle);
   }
+
+  //SU hack
   WriteSecurity();
+  //SU hack end
 
   // Write footer
   if (ok()) {
