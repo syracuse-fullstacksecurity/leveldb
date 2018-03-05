@@ -1,6 +1,14 @@
+HOW TO RUN
+===
+
+```
 ./build.sh
 ./run.sh
+```
 
+
+DOC
+===
 
 
 This is the LevelDB with security. The implementation is documented here 
