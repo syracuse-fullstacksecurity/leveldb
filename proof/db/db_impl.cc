@@ -1168,7 +1168,12 @@ Status DBImpl::Get(const ReadOptions& options,
     } else if (imm != NULL && imm->Get(lkey, value, &s)) {
       // Done
     } else {
-      s = current->Get(options, lkey, value, &stats);
+      //SU hack
+      std::vector<RECORD> pfBlock;
+      std::vector<DIGEST> pfFile;
+      s = current->Get(options, lkey, value, &stats, &pfBlock, &pfFile);
+      verifier_get(key,*value,pfBlock,pfFile);
+      //SU hack end
       have_stat_update = true;
     }
     mutex_.Lock();

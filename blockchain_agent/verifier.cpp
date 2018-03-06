@@ -51,8 +51,10 @@ int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
   sha3_final((unsigned char *)gSTATE.mem->rep_,DIGEST_SIZE);
 }
 
-int verifier_get() {
+int verifier_get(const Slice& key, const Slice& value, const std::vector<RECORD>& pfBlock, const std::vector<DIGEST>& pfFile) {
+
 } 
+
 bool myfunction (const RECORD& i,const RECORD& j) { return (i.seq < j.seq); }
 
 int verifier_compact_memtable(std::vector<RECORD>& t) {

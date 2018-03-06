@@ -230,8 +230,10 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
   Status s;
   Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
   iiter->Seek(k);
+  //SU hack
   std::vector<RECORD> nbs;
   std::vector<DIGEST> diBlocks;
+  //SU hack end
   if (iiter->Valid()) {
     Slice handle_value = iiter->value();
     FilterBlockReader* filter = rep_->filter;
