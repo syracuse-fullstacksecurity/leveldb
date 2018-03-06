@@ -17,7 +17,7 @@
 #include "table/two_level_iterator.h"
 #include "util/coding.h"
 #include "util/logging.h"
-
+#include "../include/verifier.h"
 namespace leveldb {
 
 static int TargetFileSize(const Options* options) {
@@ -265,7 +265,7 @@ struct Saver {
   std::string* value;
 };
 }
-static void SaveValue(void* arg, const Slice& ikey, const Slice& v) {
+static void SaveValue(void* arg, const Slice& ikey, const Slice& v, const std::vector<RECORD>& pfBlock, const std::vector<DIGEST>& pfFile) {
   Saver* s = reinterpret_cast<Saver*>(arg);
   ParsedInternalKey parsed_key;
   if (!ParseInternalKey(ikey, &parsed_key)) {

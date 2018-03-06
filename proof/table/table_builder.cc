@@ -137,6 +137,9 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
   sha3_update(tmp,key.size()+value.size()+DIGEST_SIZE);
   sha3_final(rep_->cur.rep_,DIGEST_SIZE);
   delete tmp;
+
+
+
   //SU hack end
   const size_t estimated_block_size = r->data_block.CurrentSizeEstimate();
   if (estimated_block_size >= r->options.block_size) {

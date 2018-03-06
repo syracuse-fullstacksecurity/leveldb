@@ -223,12 +223,15 @@ Iterator* Table::NewIterator(const ReadOptions& options) const {
       &Table::BlockReader, const_cast<Table*>(this), options);
 }
 
+// SU hack
 Status Table::InternalGet(const ReadOptions& options, const Slice& k,
                           void* arg,
-                          void (*saver)(void*, const Slice&, const Slice&)) {
+                          void (*saver)(void*, const Slice&, const Slice&,const std::vector<RECORD>&, const std::vector<DIGEST>&)) {
   Status s;
   Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
   iiter->Seek(k);
+  std::vector<RECORD> nbs;
+  std::vector<DIGEST> diBlocks;
   if (iiter->Valid()) {
     Slice handle_value = iiter->value();
     FilterBlockReader* filter = rep_->filter;
@@ -241,7 +244,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
       Iterator* block_iter = BlockReader(this, options, iiter->value());
       block_iter->Seek(k);
       if (block_iter->Valid()) {
-        (*saver)(arg, block_iter->key(), block_iter->value());
+        (*saver)(arg, block_iter->key(), block_iter->value(),nbs,diBlocks);
       }
       s = block_iter->status();
       delete block_iter;

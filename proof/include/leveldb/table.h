@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include "leveldb/export.h"
 #include "leveldb/iterator.h"
+#include <vector>
+#include "../include/verifier.h"
 
 namespace leveldb {
 
@@ -67,10 +69,11 @@ class LEVELDB_EXPORT Table {
   // to Seek(key).  May not make such a call if filter policy says
   // that key is not present.
   friend class TableCache;
+  //SU hack
   Status InternalGet(
       const ReadOptions&, const Slice& key,
       void* arg,
-      void (*handle_result)(void* arg, const Slice& k, const Slice& v));
+      void (*handle_result)(void* arg, const Slice& k, const Slice& v, const std::vector<RECORD>& pfBlock, const std::vector<DIGEST>& pfFile));
 
 
   void ReadMeta(const Footer& footer);
