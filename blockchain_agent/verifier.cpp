@@ -33,9 +33,6 @@ int verifier_init() {
   gSTATE.imm= NULL;
 }
 int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
-  //	std::cout << "verifier_put key = " << key.ToString() << std::endl;
-  //	std::cout << "verifier_put val = " << value.ToString() << std::endl;
-  //std::cout << "verifier_put seq = " << seq << std::endl;
   assert(seq==gSTATE.last+1);
   gSTATE.last = seq;
   if (gSTATE.mem_ts_start == -1) {
@@ -52,7 +49,18 @@ int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
 }
 
 int verifier_get(const Slice& key, const Slice& value, const std::vector<RECORD>& pfBlock, const std::vector<DIGEST>& pfFile) {
-
+  unsigned char digest[DIGEST_SIZE];
+  sha3_update((const unsigned char*)key.data(),key.size());
+  sha3_final(digest,DIGEST_SIZE);
+  for(int i=0;i<pfBlock.size();i++) {
+    //assert(digest == pfBlock[i].rep_);
+  }
+  // build up hash for the block
+  for(int i=0;i<pfFile.size();i++) {
+    //asswert(digest == pfFile[i].rep_);
+  }
+  // build up hash for the file
+  //assert(digest==pSTATE.Ln[level].get(file_number))
 } 
 
 bool myfunction (const RECORD& i,const RECORD& j) { return (i.seq < j.seq); }
