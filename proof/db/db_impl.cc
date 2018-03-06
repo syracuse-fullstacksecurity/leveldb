@@ -905,6 +905,18 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
         level + 1,
         out.number, out.file_size, out.smallest, out.largest);
   }
+  //SU hack
+  std::vector<int> input_files_level1;
+  std::vector<int> input_files_level2;
+  std::vector<int> output_files;
+  //for(int i=0;i<compact->compaction->inputs_[0].size();i++)
+      //input_files_level1.push_back(compact->compaction->inputs_[0].get(i));
+  //for(int i=0;i<compact->compaction->inputs_[1].size();i++)
+      //input_files_level1.push_back(compact->compaction->inputs_[1].get(i));
+  //for(int i=0;i<compact->Ouputs_.size();i++)
+      //output_files.push_back(compact->Outpus_[i].file_number);
+  verifier_compaction(input_files_level1,input_files_level2,output_files,level);
+  //SU hack end
   return versions_->LogAndApply(compact->compaction->edit(), &mutex_);
 }
 

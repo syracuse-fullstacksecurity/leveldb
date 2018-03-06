@@ -31,6 +31,8 @@ int verifier_get(const Slice& key, const Slice& value,
                 const std::vector<RECORD>& pfBlock, 
                 const std::vector<DIGEST>& pfFile);
 int verifier_compact_memtable(std::vector<RECORD>& t);
-int verifier_compaction();
-
+int verifier_compaction(const std::vector<int>& input_files1,
+                        const std::vector<int>& input_files2, 
+                        const std::vector<int>& output_files, 
+                        int i);
 #endif

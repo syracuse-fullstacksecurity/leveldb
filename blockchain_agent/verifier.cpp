@@ -91,5 +91,8 @@ int verifier_compact_memtable(std::vector<RECORD>& t) {
   //TODO minor bug: sometime the verification failed
 }
 
-int verifier_compaction() {
+int verifier_compaction(const std::vector<int>& input_files1,
+                        const std::vector<int>& input_files2, 
+                        const std::vector<int>& output_files, 
+                        int i) {
 }
