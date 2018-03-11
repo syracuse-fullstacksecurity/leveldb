@@ -17,6 +17,7 @@
 #include "util/mutexlock.h"
 #include "util/random.h"
 #include "util/testutil.h"
+#include <iostream>
 
 // Comma-separated list of operations to run in the specified order
 //   Actual benchmarks:
@@ -42,9 +43,9 @@
 //      sstables    -- Print sstable info
 //      heapprofile -- Dump a heap profile (if supported by this port)
 static const char* FLAGS_benchmarks =
-    "fillseq,"
+    //"fillseq,"
     //"fillsync,"
-    //"fillrandom,"
+    "fillrandom,"
     //"overwrite,"
     //"readrandom,"
     //"readrandom,"  // Extra run to allow previous compactions to quiesce
@@ -540,7 +541,9 @@ class Benchmark {
           Open();
         }
       }
-
+      std::string ret;
+      db_->GetProperty("leveldb.stats",&ret);
+      std::cout << ret << std::endl;
       if (method != NULL) {
         RunBenchmark(num_threads, name, method);
       }

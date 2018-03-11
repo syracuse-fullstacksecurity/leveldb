@@ -528,6 +528,7 @@ int Version::PickLevelForMemTableOutput(
       level++;
     }
   }
+  printf("pickup level for memtable %d\n",level);
   return level;
 }
 

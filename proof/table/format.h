@@ -4,7 +4,7 @@
 
 #ifndef STORAGE_LEVELDB_TABLE_FORMAT_H_
 #define STORAGE_LEVELDB_TABLE_FORMAT_H_
-
+#include "../include/sha3.h"
 #include <string>
 #include <stdint.h>
 #include "leveldb/slice.h"
@@ -40,6 +40,9 @@ class BlockHandle {
  private:
   uint64_t offset_;
   uint64_t size_;
+  //SU hack
+  unsigned char block_digest[DIGEST_SIZE];
+  //SU hack end
 };
 
 // Footer encapsulates the fixed information stored at the tail
