@@ -69,7 +69,7 @@ class LEVELDB_EXPORT Table {
   // to Seek(key).  May not make such a call if filter policy says
   // that key is not present.
   friend class TableCache;
-  //SU hack
+  //SUSEC
   Status InternalGet(
       const ReadOptions&, const Slice& key,
       void* arg,

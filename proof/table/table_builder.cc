@@ -31,12 +31,12 @@ struct TableBuilder::Rep {
   int64_t num_entries;
   bool closed;          // Either Finish() or Abandon() has been called.
   FilterBlockBuilder*   filter_block;
-  //SU hack
+#if defined(SUSEC)
   DIGEST cur;
   std::vector<DIGEST> diBlocks;
   std::vector<DIGEST> perBlock;
   DIGEST entire;
-  //SU end
+#endif
 
   // We do not emit the index entry for a block until we have seen the
   // first key for the next data block.  This allows us to use shorter
@@ -72,12 +72,12 @@ TableBuilder::TableBuilder(const Options& options, WritableFile* file)
     : rep_(new Rep(options, file)) {
   if (rep_->filter_block != NULL) {
     rep_->filter_block->StartBlock(0);
-    //SU hack
+#if defined(SUSEC)
     memset(&rep_->cur,0,sizeof(DIGEST));
     memset(&rep_->entire,0,sizeof(DIGEST));
     rep_->diBlocks.clear();
     rep_->perBlock.clear();
-    //SU hack end
+#endif
   }
 }
 
@@ -104,10 +104,6 @@ Status TableBuilder::ChangeOptions(const Options& options) {
 }
 
 void TableBuilder::Add(const Slice& key, const Slice& value) {
-  //SU hack
-  static int i =0;
-  //printf("%s and i=%d\n",__func__,++i); 
-  //SU end
   Rep* r = rep_;
   assert(!r->closed);
   if (!ok()) return;
@@ -119,14 +115,19 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
     assert(r->data_block.empty());
     r->options.comparator->FindShortestSeparator(&r->last_key, key);
     std::string handle_encoding;
+    #if defined(SUSEC)
     unsigned char* tmp = new unsigned char[r->perBlock.size()*DIGEST_SIZE_SHA1];
     for(int i=0;i<r->perBlock.size();i++)
       memcpy(tmp+i*DIGEST_SIZE_SHA1,r->perBlock[i].rep_,DIGEST_SIZE_SHA1);
+    #if defined(SUHASH)
+    printf("hash\n");
     sha1(tmp,r->perBlock.size()*DIGEST_SIZE_SHA1,rep_->cur.rep_);
+    #endif
     delete[] tmp;
     r->perBlock.clear();
     rep_->diBlocks.push_back(rep_->cur);
     r->pending_handle.set_digest(rep_->cur.rep_);
+    #endif
     r->pending_handle.EncodeTo(&handle_encoding);
     r->index_block.Add(r->last_key, Slice(handle_encoding));
     r->pending_index_entry = false;
@@ -139,14 +140,17 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
   r->last_key.assign(key.data(), key.size());
   r->num_entries++;
   r->data_block.Add(key, value);
-  //SU hack
+ 
+  #ifdef SUSEC 
   unsigned char* tmp = new unsigned char[key.size()+value.size()];
   memcpy(tmp,key.data(),key.size());
   memcpy(tmp+key.size(),value.data(),value.size());
+  #ifdef SUHASH
   sha1(tmp,key.size()+value.size(),rep_->cur.rep_);
+  #endif
   delete tmp;
   rep_->perBlock.push_back(rep_->cur);
-  //SU hack end
+  #endif
   const size_t estimated_block_size = r->data_block.CurrentSizeEstimate();
   if (estimated_block_size >= r->options.block_size) {
     Flush();
@@ -206,20 +210,22 @@ void TableBuilder::WriteBlock(BlockBuilder* block, BlockHandle* handle) {
 }
 
 
-//SU hack
+#ifdef SUSEC
 void TableBuilder::WriteSecurity() {
   static int i =0;
   Rep *r = rep_;
   unsigned char* tmp = new unsigned char[r->diBlocks.size()*DIGEST_SIZE_SHA1];
   for(int i=0;i<r->diBlocks.size();i++)
     memcpy(tmp+i*DIGEST_SIZE_SHA1,r->diBlocks[i].rep_,DIGEST_SIZE_SHA1);
+  #ifdef SUHASH
   sha1(tmp,r->diBlocks.size()*DIGEST_SIZE_SHA1,rep_->cur.rep_);
+  #endif
   delete[] tmp;
   r->diBlocks.clear();
   r->status = r->file->Append(Slice((const char*)r->cur.rep_,DIGEST_SIZE_SHA1));
   r->offset += DIGEST_SIZE_SHA1;
 }
-//SU hack end
+#endif
 
 void TableBuilder::WriteRawBlock(const Slice& block_contents,
                                  CompressionType type,
@@ -280,6 +286,18 @@ Status TableBuilder::Finish() {
     if (r->pending_index_entry) {
       r->options.comparator->FindShortSuccessor(&r->last_key);
       std::string handle_encoding;
+#if defined(SUSEC)
+      unsigned char* tmp = new unsigned char[r->perBlock.size()*DIGEST_SIZE_SHA1];
+      for(int i=0;i<r->perBlock.size();i++)
+        memcpy(tmp+i*DIGEST_SIZE_SHA1,r->perBlock[i].rep_,DIGEST_SIZE_SHA1);
+#if defined(SUHASH)
+      sha1(tmp,r->perBlock.size()*DIGEST_SIZE_SHA1,rep_->cur.rep_);
+#endif
+      delete[] tmp;
+      r->perBlock.clear();
+      rep_->diBlocks.push_back(rep_->cur);
+      r->pending_handle.set_digest(rep_->cur.rep_);
+#endif
       r->pending_handle.EncodeTo(&handle_encoding);
       r->index_block.Add(r->last_key, Slice(handle_encoding));
       r->pending_index_entry = false;
@@ -287,9 +305,9 @@ Status TableBuilder::Finish() {
     WriteBlock(&r->index_block, &index_block_handle);
   }
 
-  //SU hack
+  #if defined(SUEC)
   WriteSecurity();
-  //SU hack end
+  #endif
 
   // Write footer
   if (ok()) {

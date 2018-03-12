@@ -80,8 +80,9 @@ class LEVELDB_EXPORT TableBuilder {
   void WriteBlock(BlockBuilder* block, BlockHandle* handle);
   void WriteRawBlock(const Slice& data, CompressionType, BlockHandle* handle);
 
-  //SU hack
+  #ifdef SUSEC
   void WriteSecurity();
+  #endif
 
   struct Rep;
   Rep* rep_;

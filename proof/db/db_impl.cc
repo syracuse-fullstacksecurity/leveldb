@@ -495,7 +495,7 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
   Iterator* iter = mem->NewIterator();
   Log(options_.info_log, "Level-0 table #%llu: started",
       (unsigned long long) meta.number);
-  //SU hack
+  #ifdef SUSEC
   unsigned long start = 1<<30;
   unsigned long end = 0;
   static int i = 0;
@@ -517,7 +517,7 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
   } 
   printf("WriteLevel0Table record count=%d,start=%lu,end=%lu, memsize=%d\n",i,start,end,t.size()); 
   verifier_compact_memtable(t);
-  //SU hack end
+  #endif
 
   Status s;
   {
@@ -905,7 +905,7 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
         level + 1,
         out.number, out.file_size, out.smallest, out.largest);
   }
-  //SU hack
+  #ifdef SUSEC
   std::vector<int> input_files_level1;
   std::vector<int> input_files_level2;
   std::vector<int> output_files;
@@ -916,15 +916,11 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
   //for(int i=0;i<compact->Ouputs_.size();i++)
       //output_files.push_back(compact->Outpus_[i].file_number);
   verifier_compaction(input_files_level1,input_files_level2,output_files,level);
-  //SU hack end
+  #endif
   return versions_->LogAndApply(compact->compaction->edit(), &mutex_);
 }
 
 Status DBImpl::DoCompactionWork(CompactionState* compact) {
-  //SU hack
-  static int i=0;
-  printf("do compaction triggered\n");
-  //SU end
   const uint64_t start_micros = env_->NowMicros();
   int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
 
@@ -1032,8 +1028,6 @@ Status DBImpl::DoCompactionWork(CompactionState* compact) {
         compact->current_output()->smallest.DecodeFrom(key);
       }
       compact->current_output()->largest.DecodeFrom(key);
-      //SU hack
-      //printf("do compaction %d\n",++i);
       compact->builder->Add(key, input->value());
 
       // Close output file if it is big enough
@@ -1180,12 +1174,12 @@ Status DBImpl::Get(const ReadOptions& options,
     } else if (imm != NULL && imm->Get(lkey, value, &s)) {
       // Done
     } else {
-      //SU hack
+      #ifdef SUSEC
       std::vector<RECORD> pfBlock;
       std::vector<DIGEST> pfFile;
       s = current->Get(options, lkey, value, &stats, &pfBlock, &pfFile);
       verifier_get(key,*value,pfBlock,pfFile);
-      //SU hack end
+      #endif
       have_stat_update = true;
     }
     mutex_.Lock();
@@ -1414,9 +1408,9 @@ Status DBImpl::MakeRoomForWrite(bool force) {
       logfile_ = lfile;
       logfile_number_ = new_log_number;
       log_ = new log::Writer(lfile);
-      //SU hack
+      #ifdef SUSEC
       verifier_flip_mem();
-      //SU hack end
+      #endif
       imm_ = mem_;
       has_imm_.Release_Store(imm_);
       mem_ = new MemTable(internal_comparator_);
@@ -1540,9 +1534,9 @@ DB::~DB() { }
 Status DB::Open(const Options& options, const std::string& dbname,
                 DB** dbptr) {
   *dbptr = NULL;
-  //SU hack
+  #ifdef SUSEC
   verifier_init();
-  //SU hack end
+  #endif
   DBImpl* impl = new DBImpl(options, dbname);
   impl->mutex_.Lock();
   VersionEdit edit;

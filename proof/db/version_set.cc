@@ -330,7 +330,7 @@ void Version::ForEachOverlapping(Slice user_key, Slice internal_key,
 }
 
 
-//SU hack
+//SUSEC
 Status Version::Get(const ReadOptions& options,
                     const LookupKey& k,
                     std::string* value,
@@ -528,7 +528,6 @@ int Version::PickLevelForMemTableOutput(
       level++;
     }
   }
-  printf("pickup level for memtable %d\n",level);
   return level;
 }
 

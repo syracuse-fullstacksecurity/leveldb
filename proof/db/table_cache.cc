@@ -103,7 +103,7 @@ Iterator* TableCache::NewIterator(const ReadOptions& options,
 }
 
 
-//SU hack - Add return value
+//SUSEC
 Status TableCache::Get(const ReadOptions& options,
                        uint64_t file_number,
                        uint64_t file_size,

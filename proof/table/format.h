@@ -31,8 +31,9 @@ class BlockHandle {
   uint64_t size() const { return size_; }
   void set_size(uint64_t size) { size_ = size; }
 
-  //SU hack
+  #ifdef SUSEC
   void set_digest(const unsigned char* digest) {memcpy(block_digest,digest,DIGEST_SIZE_SHA1);}
+  #endif
   void EncodeTo(std::string* dst) const;
   Status DecodeFrom(Slice* input);
 
@@ -42,9 +43,9 @@ class BlockHandle {
  private:
   uint64_t offset_;
   uint64_t size_;
-  //SU hack
+  #ifdef SUSEC
   unsigned char block_digest[DIGEST_SIZE];
-  //SU hack end
+  #endif
 };
 
 // Footer encapsulates the fixed information stored at the tail
