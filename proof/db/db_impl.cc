@@ -515,7 +515,7 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
     t.push_back(*r);
     iter->Next();
   } 
-  printf("WriteLevel0Table record count=%d,start=%lu,end=%lu, memsize=%d\n",i,start,end,t.size()); 
+  //printf("WriteLevel0Table record count=%d,start=%lu,end=%lu, memsize=%d\n",i,start,end,t.size()); 
   verifier_compact_memtable(t);
   #endif
 

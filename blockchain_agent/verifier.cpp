@@ -37,21 +37,24 @@ int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
   gSTATE.last = seq;
   if (gSTATE.mem_ts_start == -1) {
     gSTATE.mem_ts_start = seq;
-    std::cout << key.ToString() << std::endl;
-    sha3_update((const unsigned char *)key.data(),key.size());
+    #ifdef SUHASH
+    sha1((void*)key.data(),key.size(),gSTATE.mem->rep_);
+    #endif
   } else {
     unsigned char tmp[200];
     memcpy(tmp,gSTATE.mem->rep_,DIGEST_SIZE);
     memcpy(tmp+DIGEST_SIZE,key.data(),key.size());
-    sha3_update(tmp,key.size()+DIGEST_SIZE);
+    #ifdef SUHASH
+    sha1(tmp,key.size()+DIGEST_SIZE,gSTATE.mem->rep_);
+    #endif
   }
-  sha3_final((unsigned char *)gSTATE.mem->rep_,DIGEST_SIZE);
 }
 
 int verifier_get(const Slice& key, const Slice& value, const std::vector<RECORD>& pfBlock, const std::vector<DIGEST>& pfFile) {
   unsigned char digest[DIGEST_SIZE];
-  sha3_update((const unsigned char*)key.data(),key.size());
-  sha3_final(digest,DIGEST_SIZE);
+  #ifdef SUHASH
+  sha1((void*)key.data(),key.size(),digest);
+  #endif
   for(int i=0;i<pfBlock.size();i++) {
     //assert(digest == pfBlock[i].rep_);
   }
@@ -70,20 +73,22 @@ int verifier_compact_memtable(std::vector<RECORD>& t) {
   //sort to time-ordered
   std::sort(t.begin(),t.end(),myfunction);
   unsigned char resHash[DIGEST_SIZE];
-  sha3_update((const unsigned char *)t[0].key.data(),t[0].key.size());
-  sha3_final(resHash,DIGEST_SIZE);
+  #ifdef SUHASH
+  sha1((void*)t[0].key.data(),t[0].key.size(),resHash);
+  #endif
   for(int i=1;i<t.size();i++) {
     unsigned char tmp[200];
     memcpy(tmp,resHash,DIGEST_SIZE);
     memcpy(tmp+DIGEST_SIZE,t[i].key.data(),t[i].key.size());
-    sha3_update(tmp,t[i].key.size()+DIGEST_SIZE);
-    sha3_final(resHash,DIGEST_SIZE);
+    #ifdef SUHASH
+    sha1(tmp,t[i].key.size()+DIGEST_SIZE,resHash);
+    #endif
   }
   for(int i=0;i<DIGEST_SIZE;i++) {
     if (resHash[i] != gSTATE.imm->rep_[i]) {
-      printf("in %s and firstis=%lu and last=%lu,imm_start=%lu,imm_end=%lu\n",__func__,t[0].seq,t[t.size()-1].seq,gSTATE.imm_ts_start,gSTATE.imm_ts_end);
-      std::cout << t[0].key.ToString() << std::endl;
-      std::cout << "different" << std::endl;
+      //printf("in %s and firstis=%lu and last=%lu,imm_start=%lu,imm_end=%lu\n",__func__,t[0].seq,t[t.size()-1].seq,gSTATE.imm_ts_start,gSTATE.imm_ts_end);
+      //std::cout << t[0].key.ToString() << std::endl;
+      //std::cout << "different" << std::endl;
       break;
     }
   }

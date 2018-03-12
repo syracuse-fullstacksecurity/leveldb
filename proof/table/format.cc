@@ -17,14 +17,14 @@ void BlockHandle::EncodeTo(std::string* dst) const {
   assert(offset_ != ~static_cast<uint64_t>(0));
   assert(size_ != ~static_cast<uint64_t>(0));
   #ifdef SUSEC
-  dst->append((const char*)block_digest, DIGEST_SIZE_SHA1);
+//  dst->append((const char*)block_digest, DIGEST_SIZE_SHA1);
   #endif
   PutVarint64(dst, offset_);
   PutVarint64(dst, size_);
 }
 
 Status BlockHandle::DecodeFrom(Slice* input) {
-#ifdef SUSEC
+#if 0
   Slice input1(input->data() + 20, input->size()-20);
   if (GetVarint64(&input1, &offset_) &&
       GetVarint64(&input1, &size_)) {

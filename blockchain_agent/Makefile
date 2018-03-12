@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-I../include -fPIC -g
+CFLAGS=-I../include -fPIC -g -DSUHASH
 %.o : %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@ 
 

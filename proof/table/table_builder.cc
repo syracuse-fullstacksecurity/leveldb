@@ -120,7 +120,6 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
     for(int i=0;i<r->perBlock.size();i++)
       memcpy(tmp+i*DIGEST_SIZE_SHA1,r->perBlock[i].rep_,DIGEST_SIZE_SHA1);
     #if defined(SUHASH)
-    printf("hash\n");
     sha1(tmp,r->perBlock.size()*DIGEST_SIZE_SHA1,rep_->cur.rep_);
     #endif
     delete[] tmp;
