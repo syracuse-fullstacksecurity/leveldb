@@ -119,7 +119,6 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
     assert(r->data_block.empty());
     r->options.comparator->FindShortestSeparator(&r->last_key, key);
     std::string handle_encoding;
-    r->pending_handle.EncodeTo(&handle_encoding);
     unsigned char* tmp = new unsigned char[r->perBlock.size()*DIGEST_SIZE_SHA1];
     for(int i=0;i<r->perBlock.size();i++)
       memcpy(tmp+i*DIGEST_SIZE_SHA1,r->perBlock[i].rep_,DIGEST_SIZE_SHA1);
@@ -127,6 +126,8 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
     delete[] tmp;
     r->perBlock.clear();
     rep_->diBlocks.push_back(rep_->cur);
+    r->pending_handle.set_digest(rep_->cur.rep_);
+    r->pending_handle.EncodeTo(&handle_encoding);
     r->index_block.Add(r->last_key, Slice(handle_encoding));
     r->pending_index_entry = false;
   }

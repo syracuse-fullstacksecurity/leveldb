@@ -3,7 +3,7 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "table/format.h"
-
+#include "../include/sha3.h"
 #include "leveldb/env.h"
 #include "port/port.h"
 #include "table/block.h"
@@ -16,13 +16,15 @@ void BlockHandle::EncodeTo(std::string* dst) const {
   // Sanity check that all fields have been set
   assert(offset_ != ~static_cast<uint64_t>(0));
   assert(size_ != ~static_cast<uint64_t>(0));
+  dst->append((const char*)block_digest, DIGEST_SIZE_SHA1);
   PutVarint64(dst, offset_);
   PutVarint64(dst, size_);
 }
 
-Status BlockHandle::DecodeFrom(Slice* input) {
-  if (GetVarint64(input, &offset_) &&
-      GetVarint64(input, &size_)) {
+Status BlockHandle::DecodeFrom(Slice* input1) {
+  Slice input(input1->data() + 20, input1->size()-20);
+  if (GetVarint64(&input, &offset_) &&
+      GetVarint64(&input, &size_)) {
     return Status::OK();
   } else {
     return Status::Corruption("bad block handle");

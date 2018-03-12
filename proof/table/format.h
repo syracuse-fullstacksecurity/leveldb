@@ -31,6 +31,8 @@ class BlockHandle {
   uint64_t size() const { return size_; }
   void set_size(uint64_t size) { size_ = size; }
 
+  //SU hack
+  void set_digest(const unsigned char* digest) {memcpy(block_digest,digest,DIGEST_SIZE_SHA1);}
   void EncodeTo(std::string* dst) const;
   Status DecodeFrom(Slice* input);
 
