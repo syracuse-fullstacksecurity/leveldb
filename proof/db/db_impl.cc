@@ -488,6 +488,8 @@ Status DBImpl::RecoverLogFile(uint64_t log_number, bool last_log,
 Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
                                 Version* base) {
   mutex_.AssertHeld();
+  static int i=0;
+  printf("WriteLevel0 %d\n",++i);
   const uint64_t start_micros = env_->NowMicros();
   FileMetaData meta;
   meta.number = versions_->NewFileNumber();
@@ -498,7 +500,6 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
   #ifdef SUSEC
   unsigned long start = 1<<30;
   unsigned long end = 0;
-  static int i = 0;
   iter->SeekToFirst();
   std::vector<RECORD> t;
   while(iter->Valid()) {
@@ -506,7 +507,6 @@ Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
     const uint64_t seq = anum >> 8;
     if (seq < start) start = seq;
     if (seq > end) end = seq;
-    i++;
     pRECORD r = new RECORD;
     r->key = Slice(iter->key().data(),iter->key().size()-8);
     r->val = iter->value();
@@ -580,6 +580,7 @@ void DBImpl::CompactMemTable() {
   if (s.ok()) {
     // Commit to the new state
     imm_->Unref();
+    printf("compact memtable success\n");
     imm_ = NULL;
     has_imm_.Release_Store(NULL);
     DeleteObsoleteFiles();
@@ -709,9 +710,11 @@ void DBImpl::BackgroundCall() {
 
 void DBImpl::BackgroundCompaction() {
   mutex_.AssertHeld();
-
+  static int i =0;
   if (imm_ != NULL) {
+    printf("background compaction but needs to compact mem %d\n",++i);
     CompactMemTable();
+    printf("background compaction compaction done %d\n",++i);
     return;
   }
 
@@ -923,7 +926,8 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
 Status DBImpl::DoCompactionWork(CompactionState* compact) {
   const uint64_t start_micros = env_->NowMicros();
   int64_t imm_micros = 0;  // Micros spent doing imm_ compactions
-
+  static int i = 0;
+  printf("triggered compaction %d\n",++i);
   Log(options_.info_log,  "Compacting %d@%d + %d@%d files",
       compact->compaction->num_input_files(0),
       compact->compaction->level(),
