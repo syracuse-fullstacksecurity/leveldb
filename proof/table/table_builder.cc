@@ -16,7 +16,6 @@
 #include "table/format.h"
 #include "util/coding.h"
 #include "util/crc32c.h"
-
 namespace leveldb {
 
 struct TableBuilder::Rep {
@@ -255,7 +254,6 @@ Status TableBuilder::Finish() {
   Flush();
   assert(!r->closed);
   r->closed = true;
-
   BlockHandle filter_block_handle, metaindex_block_handle, index_block_handle;
 
   // Write filter block

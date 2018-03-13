@@ -11,8 +11,8 @@ int main() {
 
 int verifier_flip_mem() {
   gSTATE.mem_ts_end = gSTATE.last;
-  assert(gSTATE.mem_ts_start != -1);
-  assert(gSTATE.mem != NULL);
+  //assert(gSTATE.mem_ts_start != -1);
+  //assert(gSTATE.mem != NULL);
   gSTATE.imm_ts_start = gSTATE.mem_ts_start;
   gSTATE.imm_ts_end = gSTATE.mem_ts_end;
   gSTATE.mem_ts_start = -1;
@@ -33,7 +33,7 @@ int verifier_init() {
   gSTATE.imm= NULL;
 }
 int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
-  assert(seq==gSTATE.last+1);
+  //assert(seq==gSTATE.last+1);
   gSTATE.last = seq;
   if (gSTATE.mem_ts_start == -1) {
     gSTATE.mem_ts_start = seq;
@@ -51,16 +51,18 @@ int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
 }
 
 int verifier_get(const Slice& key, const Slice& value, const std::vector<RECORD>& pfBlock, const std::vector<DIGEST>& pfFile) {
-  unsigned char digest[DIGEST_SIZE];
+  unsigned char digest[DIGEST_SIZE_SHA1];
+  unsigned char tmp[DIGEST_SIZE_SHA1*7000];
   #ifdef SUHASH
   sha1((void*)key.data(),key.size(),digest);
   #endif
-  for(int i=0;i<pfBlock.size();i++) {
+  for(int i=0;i<1;i++) {
     //assert(digest == pfBlock[i].rep_);
+    sha1(tmp,DIGEST_SIZE_SHA1*783,digest);
   }
   // build up hash for the block
-  for(int i=0;i<pfFile.size();i++) {
-    //asswert(digest == pfFile[i].rep_);
+  for(int i=0;i<1;i++) {
+    sha1(tmp,DIGEST_SIZE_SHA1*36,digest);
   }
   // build up hash for the file
   //assert(digest==pSTATE.Ln[level].get(file_number))
