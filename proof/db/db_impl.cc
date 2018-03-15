@@ -1173,10 +1173,10 @@ Status DBImpl::Get(const ReadOptions& options,
     } else if (imm != NULL && imm->Get(lkey, value, &s)) {
       // Done
     } else {
-      #ifdef SUSEC
       std::vector<RECORD> pfBlock;
       std::vector<DIGEST> pfFile;
       s = current->Get(options, lkey, value, &stats, &pfBlock, &pfFile);
+      #ifdef SUSEC
       verifier_get(key,*value,pfBlock,pfFile);
       #endif
       have_stat_update = true;

@@ -244,6 +244,12 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
       // Not found
     } else {
       Iterator* block_iter = BlockReader(this, options, iiter->value());
+      #if 0
+      block_iter->SeekToFirst();
+      while(block_iter->Valid()) {
+        block_iter->Next();
+      }
+      #endif
       block_iter->Seek(k);
       if (block_iter->Valid()) {
         (*saver)(arg, block_iter->key(), block_iter->value(),nbs,diBlocks);

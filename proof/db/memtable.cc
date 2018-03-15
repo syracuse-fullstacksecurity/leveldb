@@ -111,6 +111,12 @@ void MemTable::Add(SequenceNumber s, ValueType type,
 bool MemTable::Get(const LookupKey& key, std::string* value, Status* s) {
   Slice memkey = key.memtable_key();
   Table::Iterator iter(&table_);
+  #if 0
+  iter.SeekToFirst();
+  while(iter.Valid()) {
+    iter.Next();
+  }
+  #endif
   iter.Seek(memkey.data());
   if (iter.Valid()) {
     // entry format is:
