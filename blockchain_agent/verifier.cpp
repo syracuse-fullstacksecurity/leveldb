@@ -58,11 +58,15 @@ int verifier_get(const Slice& key, const Slice& value, const std::vector<RECORD>
   #endif
   for(int i=0;i<1;i++) {
     //assert(digest == pfBlock[i].rep_);
+    #ifdef SUHASH
     sha1(tmp,DIGEST_SIZE_SHA1*783,digest);
+    #endif
   }
   // build up hash for the block
   for(int i=0;i<1;i++) {
+    #ifdef SUHASH
     sha1(tmp,DIGEST_SIZE_SHA1*36,digest);
+    #endif 
   }
   // build up hash for the file
   //assert(digest==pSTATE.Ln[level].get(file_number))

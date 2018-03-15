@@ -488,8 +488,6 @@ Status DBImpl::RecoverLogFile(uint64_t log_number, bool last_log,
 Status DBImpl::WriteLevel0Table(MemTable* mem, VersionEdit* edit,
                                 Version* base) {
   mutex_.AssertHeld();
-  static int i=0;
-  printf("WriteLevel0 %d\n",++i);
   const uint64_t start_micros = env_->NowMicros();
   FileMetaData meta;
   meta.number = versions_->NewFileNumber();
@@ -580,7 +578,6 @@ void DBImpl::CompactMemTable() {
   if (s.ok()) {
     // Commit to the new state
     imm_->Unref();
-    printf("compact memtable success\n");
     imm_ = NULL;
     has_imm_.Release_Store(NULL);
     DeleteObsoleteFiles();
@@ -712,9 +709,7 @@ void DBImpl::BackgroundCompaction() {
   mutex_.AssertHeld();
   static int i =0;
   if (imm_ != NULL) {
-    printf("background compaction but needs to compact mem %d\n",++i);
     CompactMemTable();
-    printf("background compaction compaction done %d\n",++i);
     return;
   }
 

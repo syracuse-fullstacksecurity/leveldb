@@ -9,9 +9,9 @@
 # (A) Production use (optimized mode)
 #OPT ?= -O2 -DNDEBUG
 # (B) Debug mode, w/ full line-level debugging symbols
- OPT ?= -g2 -DSUSEC
+# OPT ?= -g2 -DSUSEC
 #  OPT ?= -g2
-# OPT ?= -g2 -DSUSEC -DSUHASH
+ OPT ?= -g2 -DSUSEC -DSUHASH
 # (C) Profiling mode: opt, but w/debugging symbols
 # OPT ?= -O2 -g2 -DNDEBUG
 #-----------------------------------------------

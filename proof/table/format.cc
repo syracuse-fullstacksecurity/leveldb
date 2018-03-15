@@ -16,8 +16,7 @@ void BlockHandle::EncodeTo(std::string* dst) const {
   // Sanity check that all fields have been set
   assert(offset_ != ~static_cast<uint64_t>(0));
   assert(size_ != ~static_cast<uint64_t>(0));
-  #if 1
-//  dst->append((const char*)block_digest, DIGEST_SIZE_SHA1);
+  #if SUSEC
   dst->append((const char*)block_digest, 14);
   #endif
   PutVarint64(dst, offset_);
@@ -25,7 +24,7 @@ void BlockHandle::EncodeTo(std::string* dst) const {
 }
 
 Status BlockHandle::DecodeFrom(Slice* input) {
-#if 1
+#if SUSEC
   Slice input1(input->data()+14, input->size()-14);
   if (GetVarint64(&input1, &offset_) &&
       GetVarint64(&input1, &size_)) {
