@@ -38,7 +38,7 @@ class BlockHandle {
   Status DecodeFrom(Slice* input);
 
   // Maximum encoding length of a BlockHandle
-  enum { kMaxEncodedLength = 10 + 10 };
+  enum { kMaxEncodedLength = 20 + 10 };
 
  private:
   uint64_t offset_;

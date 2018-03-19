@@ -17,7 +17,7 @@ void BlockHandle::EncodeTo(std::string* dst) const {
   assert(offset_ != ~static_cast<uint64_t>(0));
   assert(size_ != ~static_cast<uint64_t>(0));
   #if SUSEC
-  dst->append((const char*)block_digest, 14);
+  dst->append((const char*)block_digest, 20);
   #endif
   PutVarint64(dst, offset_);
   PutVarint64(dst, size_);
@@ -25,7 +25,7 @@ void BlockHandle::EncodeTo(std::string* dst) const {
 
 Status BlockHandle::DecodeFrom(Slice* input) {
 #if SUSEC
-  Slice input1(input->data()+14, input->size()-14);
+  Slice input1(input->data()+20, input->size()-20);
   if (GetVarint64(&input1, &offset_) &&
       GetVarint64(&input1, &size_)) {
     *input = input1;

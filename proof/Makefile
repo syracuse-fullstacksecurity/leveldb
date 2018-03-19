@@ -12,6 +12,7 @@
 # OPT ?= -g2 -DSUSEC
 #  OPT ?= -g2
  OPT ?= -g2 -DSUSEC -DSUHASH
+# OPT ?= -g2 -DSUBTREE
 # (C) Profiling mode: opt, but w/debugging symbols
 # OPT ?= -O2 -g2 -DNDEBUG
 #-----------------------------------------------

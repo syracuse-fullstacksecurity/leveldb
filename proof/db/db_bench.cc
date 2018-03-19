@@ -114,7 +114,9 @@ static bool FLAGS_reuse_logs = false;
 
 // Use the db with the following name.
 static const char* FLAGS_db = NULL;
-
+#ifdef SUBTREE
+static const char* FLAGS_proofdb = NULL;
+#endif
 namespace leveldb {
 
 namespace {
@@ -320,6 +322,9 @@ class Benchmark {
   Cache* cache_;
   const FilterPolicy* filter_policy_;
   DB* db_;
+  #ifdef SUBTREE
+  DB* proofdb_;
+  #endif
   int num_;
   int value_size_;
   int entries_per_batch_;
@@ -427,6 +432,9 @@ class Benchmark {
 
   ~Benchmark() {
     delete db_;
+    #ifdef SUBTREE
+    delete proofdb_;
+    #endif
     delete cache_;
     delete filter_policy_;
   }
@@ -726,6 +734,13 @@ class Benchmark {
       fprintf(stderr, "open error: %s\n", s.ToString().c_str());
       exit(1);
     }
+    #ifdef SUBTREE
+    s = DB::Open(options, FLAGS_proofdb, &proofdb_);
+    if (!s.ok()) {
+      fprintf(stderr, "open error: %s\n", s.ToString().c_str());
+      exit(1);
+    }
+    #endif
   }
 
   void OpenBench(ThreadState* thread) {
@@ -755,10 +770,12 @@ class Benchmark {
     WriteBatch batch;
     Status s;
     int64_t bytes = 0;
+    int kp  = 0;
     for (int i = 0; i < num_; i += entries_per_batch_) {
       batch.Clear();
       for (int j = 0; j < entries_per_batch_; j++) {
         const int k = seq ? i+j : (thread->rand.Next() % FLAGS_num);
+        kp = k;
         char key[100];
         snprintf(key, sizeof(key), "%016d", k);
         batch.Put(key, gen.Generate(value_size_));
@@ -766,6 +783,20 @@ class Benchmark {
         thread->stats.FinishedSingleOp();
       }
       s = db_->Write(write_options_, &batch);
+      #ifdef SUBTREE
+      int k1 = kp + (1<<27) - 1;
+        char key[100];
+      while (0) {
+        batch.Clear();
+        if(k1%2) k1 = k1+1;
+        else k1 = k1-1;
+        snprintf(key, sizeof(key), "%016d", k1);
+        batch.Put(key, gen.Generate(20));
+        s = proofdb_->Write(write_options_, &batch);
+        k1 = (k1-1)/2;
+      }
+      #endif
+
       if (!s.ok()) {
         fprintf(stderr, "put error: %s\n", s.ToString().c_str());
         exit(1);
@@ -803,6 +834,7 @@ class Benchmark {
   void ReadRandom(ThreadState* thread) {
     ReadOptions options;
     std::string value;
+    std::string proof;
     int found = 0;
     for (int i = 0; i < reads_; i++) {
       char key[100];
@@ -811,6 +843,16 @@ class Benchmark {
       if (db_->Get(options, key, &value).ok()) {
         found++;
       }
+      #ifdef SUBTREE
+      int k1 = k + (1<<27) - 1;
+      while (k1) {
+        if(k1%2) k1 = k1+1;
+        else k1 = k1-1;
+        snprintf(key, sizeof(key), "%016d", k1);
+        proofdb_->Get(options,key,&proof);
+        k1 = (k1-1)/2;
+      }
+      #endif
       thread->stats.FinishedSingleOp();
     }
     char msg[100];
@@ -1002,6 +1044,10 @@ int main(int argc, char** argv) {
       FLAGS_open_files = n;
     } else if (strncmp(argv[i], "--db=", 5) == 0) {
       FLAGS_db = argv[i] + 5;
+    } else if (strncmp(argv[i], "--proofdb=", 10) == 0) {
+      #ifdef SUBTREE
+      FLAGS_proofdb = argv[i] + 10;
+      #endif
     } else {
       fprintf(stderr, "Invalid flag '%s'\n", argv[i]);
       exit(1);
@@ -1016,6 +1062,7 @@ int main(int argc, char** argv) {
       default_db_path += "/dbbench";
       FLAGS_db = default_db_path.c_str();
   }
+
 
   leveldb::Benchmark benchmark;
   benchmark.Run();
