@@ -124,6 +124,8 @@ void TableBuilder::Add(const Slice& key, const Slice& value) {
     delete[] tmp;
     r->perBlock.clear();
     rep_->diBlocks.push_back(rep_->cur);
+    //for(int i=0;i<DIGEST_SIZE_SHA1;i++)
+     // rep_->cur.rep_[i] = 55;
     r->pending_handle.set_digest(rep_->cur.rep_);
     #endif
     r->pending_handle.EncodeTo(&handle_encoding);

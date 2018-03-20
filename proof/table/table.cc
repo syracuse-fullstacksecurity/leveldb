@@ -228,11 +228,13 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
                           void* arg,
                           void (*saver)(void*, const Slice&, const Slice&,const std::vector<RECORD>&, const std::vector<DIGEST>&)) {
   Status s;
+  static int i  = 0;
   Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
   iiter->Seek(k);
   // SUSEC
   std::vector<RECORD> nbs;
   std::vector<DIGEST> diBlocks;
+  std::vector<DIGEST> perBlock;
   //endif
   if (iiter->Valid()) {
     Slice handle_value = iiter->value();
@@ -244,12 +246,29 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
       // Not found
     } else {
       Iterator* block_iter = BlockReader(this, options, iiter->value());
-      #if 0
+      handle.DecodeFrom(&handle_value);
+      const unsigned char *digest = handle.get_digest(); 
+      #if SUSEC
+      DIGEST cur;
       block_iter->SeekToFirst();
       while(block_iter->Valid()) {
+        Slice key = block_iter->key();
+        Slice value = block_iter->value();
+        //unsigned char* tmp = new unsigned char[key.size()+value.size()];
+        //memcpy(tmp,key.data(),key.size());
+        //memcpy(tmp+key.size(),value.data(),value.size());
+        //sha1(tmp,key.size()+value.size(),cur.rep_);
+        //delete tmp;
+        perBlock.push_back(cur);
         block_iter->Next();
       }
+      unsigned char* tmp = new unsigned char[perBlock.size()*DIGEST_SIZE_SHA1];
+      for(int i=0;i<perBlock.size();i++)
+        memcpy(tmp+i*DIGEST_SIZE_SHA1,perBlock[i].rep_,DIGEST_SIZE_SHA1);
+      //sha1(tmp,DIGEST_SIZE_SHA1*perBlock.size(),cur.rep_);
       #endif
+      
+
       block_iter->Seek(k);
       if (block_iter->Valid()) {
         (*saver)(arg, block_iter->key(), block_iter->value(),nbs,diBlocks);

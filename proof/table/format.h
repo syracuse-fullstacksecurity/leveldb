@@ -33,6 +33,7 @@ class BlockHandle {
 
   #ifdef SUSEC
   void set_digest(const unsigned char* digest) {memcpy(block_digest,digest,DIGEST_SIZE_SHA1);}
+  const unsigned char* get_digest() {return block_digest;}
   #endif
   void EncodeTo(std::string* dst) const;
   Status DecodeFrom(Slice* input);
