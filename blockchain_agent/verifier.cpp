@@ -50,7 +50,7 @@ int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
   }
 }
 
-int verifier_get(const Slice& key, const Slice& value, const std::vector<RECORD>& pfBlock, const std::vector<DIGEST>& pfFile) {
+int verifier_get(const Slice& key, const Slice& value, const std::vector<IRECORD>& pfBlock, const std::vector<DIGEST>& pfFile) {
   unsigned char digest[DIGEST_SIZE_SHA1];
   unsigned char tmp[DIGEST_SIZE_SHA1*7000];
   #ifdef SUHASH

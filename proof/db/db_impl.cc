@@ -1172,7 +1172,7 @@ Status DBImpl::Get(const ReadOptions& options,
     } else if (imm != NULL && imm->Get(lkey, value, &s)) {
       // Done
     } else {
-      std::vector<RECORD> pfBlock;
+      std::vector<IRECORD> pfBlock;
       std::vector<DIGEST> pfFile;
       s = current->Get(options, lkey, value, &stats, &pfBlock, &pfFile);
       #ifdef SUSEC

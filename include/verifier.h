@@ -24,11 +24,16 @@ typedef struct record{
   Slice val;
 } RECORD, *pRECORD;
 
+typedef struct irecord {
+  //std::string key;
+  std::string value;
+} IRECORD, *pIRECORD;
+
 int verifier_init();
 int verifier_flip_mem();
 int verifier_put(const Slice& key, unsigned long seq, const Slice& value);
 int verifier_get(const Slice& key, const Slice& value, 
-                const std::vector<RECORD>& pfBlock, 
+                const std::vector<IRECORD>& pfBlock, 
                 const std::vector<DIGEST>& pfFile);
 int verifier_compact_memtable(std::vector<RECORD>& t);
 int verifier_compaction(const std::vector<int>& input_files1,

@@ -335,7 +335,7 @@ Status Version::Get(const ReadOptions& options,
                     const LookupKey& k,
                     std::string* value,
                     GetStats* stats,
-                    std::vector<RECORD>* pfBlock,
+                    std::vector<IRECORD>* pfBlock,
                     std::vector<DIGEST>* pfFile) {
   Slice ikey = k.internal_key();
   Slice user_key = k.user_key();

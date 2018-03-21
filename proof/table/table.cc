@@ -234,7 +234,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
   // SUSEC
   std::vector<RECORD> nbs;
   std::vector<DIGEST> diBlocks;
-  std::vector<DIGEST> perBlock;
+  std::vector<IRECORD> perBlock;
   //endif
   if (iiter->Valid()) {
     Slice handle_value = iiter->value();
@@ -246,9 +246,9 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
       // Not found
     } else {
       Iterator* block_iter = BlockReader(this, options, iiter->value());
+      #if 0 //the below code are for sha1 rebuild
       handle.DecodeFrom(&handle_value);
-      const unsigned char *digest = handle.get_digest(); 
-      #if SUSEC
+      const unsigned char *digest = handle.get_digest();
       DIGEST cur;
       block_iter->SeekToFirst();
       while(block_iter->Valid()) {
@@ -267,7 +267,23 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
         memcpy(tmp+i*DIGEST_SIZE_SHA1,perBlock[i].rep_,DIGEST_SIZE_SHA1);
       //sha1(tmp,DIGEST_SIZE_SHA1*perBlock.size(),cur.rep_);
       #endif
-      
+
+      #if SUSEC
+      handle.DecodeFrom(&handle_value);
+      const unsigned char *digest = handle.get_digest(); 
+      DIGEST cur;
+      block_iter->SeekToFirst();
+      while(block_iter->Valid()) {
+        Slice key = block_iter->key();
+        Slice value = block_iter->value();
+        IRECORD r;
+        //r.key.assign(key.data(),key.size());
+        r.value.assign(value.data(),20);
+        perBlock.push_back(r);
+        block_iter->Next();
+      }
+      #endif
+
 
       block_iter->Seek(k);
       if (block_iter->Valid()) {
