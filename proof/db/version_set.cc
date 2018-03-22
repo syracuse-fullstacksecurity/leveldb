@@ -329,7 +329,6 @@ void Version::ForEachOverlapping(Slice user_key, Slice internal_key,
   }
 }
 
-
 //SUSEC
 Status Version::Get(const ReadOptions& options,
                     const LookupKey& k,
@@ -342,6 +341,7 @@ Status Version::Get(const ReadOptions& options,
   const Comparator* ucmp = vset_->icmp_.user_comparator();
   Status s;
 
+  static int c = 0;
   stats->seek_file = NULL;
   stats->seek_file_level = -1;
   FileMetaData* last_file_read = NULL;
@@ -352,6 +352,9 @@ Status Version::Get(const ReadOptions& options,
   // in an smaller level, later levels are irrelevant.
   std::vector<FileMetaData*> tmp;
   FileMetaData* tmp2;
+  for(int level=0;level<config::kNumLevels;level++) {
+    printf("%d level files %d\n",level,files_[level].size());
+  }
   for (int level = 0; level < config::kNumLevels; level++) {
     size_t num_files = files_[level].size();
     if (num_files == 0) continue;

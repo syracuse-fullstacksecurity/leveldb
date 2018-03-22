@@ -9,6 +9,7 @@
 #include "leveldb/iterator.h"
 #include "util/coding.h"
 #include "../../include/verifier.h"
+#include "../../include/sha3.h"
 namespace leveldb {
 
 static Slice GetLengthPrefixedSlice(const char* data) {
@@ -93,27 +94,46 @@ void MemTable::Add(SequenceNumber s, ValueType type,
   size_t key_size = key.size();
   size_t val_size = value.size();
   size_t internal_key_size = key_size + 8;
+  #ifdef SUSEC
+  const size_t encoded_len =
+      VarintLength(internal_key_size) + internal_key_size +
+      VarintLength(val_size+DIGEST_SIZE_SHA1) + val_size+DIGEST_SIZE_SHA1;
+  #else
   const size_t encoded_len =
       VarintLength(internal_key_size) + internal_key_size +
       VarintLength(val_size) + val_size;
+  #endif
   char* buf = arena_.Allocate(encoded_len);
   char* p = EncodeVarint32(buf, internal_key_size);
   memcpy(p, key.data(), key_size);
   p += key_size;
   EncodeFixed64(p, (s << 8) | type);
   p += 8;
+  #ifdef SUSEC
+  unsigned char digest[DIGEST_SIZE_SHA1];
+  p = EncodeVarint32(p, val_size+DIGEST_SIZE_SHA1);
+  memcpy(p, value.data(), val_size);
+  memcpy(p+val_size, digest, DIGEST_SIZE_SHA1);
+  assert((p + val_size+DIGEST_SIZE_SHA1) - buf == encoded_len);
+  #else 
   p = EncodeVarint32(p, val_size);
   memcpy(p, value.data(), val_size);
   assert((p + val_size) - buf == encoded_len);
+  #endif
   table_.Insert(buf);
 }
 
 bool MemTable::Get(const LookupKey& key, std::string* value, Status* s) {
   Slice memkey = key.memtable_key();
   Table::Iterator iter(&table_);
-  #if 0
+  #if SUSEC
+  std::vector<IRECORD> perTable;
   iter.SeekToFirst();
+  char sim[20];
   while(iter.Valid()) {
+    IRECORD r;
+    r.value.assign(sim,20);
+    perTable.push_back(r);
     iter.Next();
   }
   #endif

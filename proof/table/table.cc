@@ -229,6 +229,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
                           void (*saver)(void*, const Slice&, const Slice&,const std::vector<RECORD>&, const std::vector<DIGEST>&)) {
   Status s;
   static int i  = 0;
+  static int mis  = 0;
   Iterator* iiter = rep_->index_block->NewIterator(rep_->options.comparator);
   iiter->Seek(k);
   // SUSEC
@@ -243,6 +244,7 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
     if (filter != NULL &&
         handle.DecodeFrom(&handle_value).ok() &&
         !filter->KeyMayMatch(handle.offset(), k)) {
+        printf("mismatch filter %d\n",++mis);
       // Not found
     } else {
       Iterator* block_iter = BlockReader(this, options, iiter->value());
@@ -267,7 +269,6 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
         memcpy(tmp+i*DIGEST_SIZE_SHA1,perBlock[i].rep_,DIGEST_SIZE_SHA1);
       //sha1(tmp,DIGEST_SIZE_SHA1*perBlock.size(),cur.rep_);
       #endif
-
       #if SUSEC
       handle.DecodeFrom(&handle_value);
       const unsigned char *digest = handle.get_digest(); 
@@ -283,7 +284,6 @@ Status Table::InternalGet(const ReadOptions& options, const Slice& k,
         block_iter->Next();
       }
       #endif
-
 
       block_iter->Seek(k);
       if (block_iter->Valid()) {
