@@ -771,7 +771,7 @@ class Benchmark {
     Status s;
     int64_t bytes = 0;
     int kp  = 0;
-    for (int i = 0; i < num_; i += entries_per_batch_) {
+    for (int i = 0; i < 10000; i += entries_per_batch_) {
       batch.Clear();
       for (int j = 0; j < entries_per_batch_; j++) {
         const int k = seq ? i+j : (thread->rand.Next() % FLAGS_num);
@@ -784,15 +784,16 @@ class Benchmark {
       }
       s = db_->Write(write_options_, &batch);
       #ifdef SUBTREE
-      int k1 = kp + (1<<27) - 1;
+      WriteBatch batch1;
+      int k1 = kp + (1<<24) - 1;
         char key[100];
-      while (0) {
-        batch.Clear();
+      while (k1) {
+        batch1.Clear();
         if(k1%2) k1 = k1+1;
         else k1 = k1-1;
         snprintf(key, sizeof(key), "%016d", k1);
-        batch.Put(key, gen.Generate(20));
-        s = proofdb_->Write(write_options_, &batch);
+        batch1.Put(key, gen.Generate(20));
+        s = proofdb_->Write(write_options_, &batch1);
         k1 = (k1-1)/2;
       }
       #endif
@@ -845,13 +846,16 @@ class Benchmark {
       }
       #ifdef SUBTREE
       int k1 = k + (1<<27) - 1;
+      int c = 0;
       while (k1) {
         if(k1%2) k1 = k1+1;
         else k1 = k1-1;
         snprintf(key, sizeof(key), "%016d", k1);
         proofdb_->Get(options,key,&proof);
         k1 = (k1-1)/2;
+        c++;
       }
+      //printf("read %d from proof store\n",c);
       #endif
       thread->stats.FinishedSingleOp();
     }

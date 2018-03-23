@@ -111,7 +111,6 @@ Status VersionEdit::DecodeFrom(const Slice& src) {
   Slice input = src;
   const char* msg = NULL;
   uint32_t tag;
-
   // Temporary storage for parsing
   int level;
   uint64_t number;

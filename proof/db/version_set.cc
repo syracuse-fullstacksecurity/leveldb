@@ -3,7 +3,7 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "db/version_set.h"
-
+#include <iostream>
 #include <algorithm>
 #include <stdio.h>
 #include "db/filename.h"
@@ -352,13 +352,24 @@ Status Version::Get(const ReadOptions& options,
   // in an smaller level, later levels are irrelevant.
   std::vector<FileMetaData*> tmp;
   FileMetaData* tmp2;
-  for(int level=0;level<config::kNumLevels;level++) {
-    printf("%d level files %d\n",level,files_[level].size());
-  }
+  std::vector<DIGEST> t;
   for (int level = 0; level < config::kNumLevels; level++) {
     size_t num_files = files_[level].size();
     if (num_files == 0) continue;
-
+    #ifdef SUSEC
+    DIGEST cur;
+    int height = 0;
+    int num_files1 = num_files;
+    while(num_files1) {
+      height++;
+      num_files1 = num_files1/2;
+    }
+    for (int i=0;i<height;i++) {
+      memcpy(cur.rep_,files_[level][0]->digest,20);
+      t.push_back(cur);
+    }
+    #endif
+    
     // Get the list of files to search in this level
     FileMetaData* const* files = &files_[level][0];
     if (level == 0) {
@@ -916,7 +927,6 @@ Status VersionSet::Recover(bool *save_manifest) {
       if (this->status->ok()) *this->status = s;
     }
   };
-
   // Read "CURRENT" file, which contains a pointer to the current manifest file
   std::string current;
   Status s = ReadFileToString(env_, CurrentFileName(dbname_), &current);
