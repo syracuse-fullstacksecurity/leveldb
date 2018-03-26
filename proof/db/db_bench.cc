@@ -771,7 +771,7 @@ class Benchmark {
     Status s;
     int64_t bytes = 0;
     int kp  = 0;
-    for (int i = 0; i < 10000; i += entries_per_batch_) {
+    for (int i = 0; i < 12500; i += entries_per_batch_) {
       batch.Clear();
       for (int j = 0; j < entries_per_batch_; j++) {
         const int k = seq ? i+j : (thread->rand.Next() % FLAGS_num);
@@ -837,6 +837,7 @@ class Benchmark {
     std::string value;
     std::string proof;
     int found = 0;
+    int64_t bytes = 0;
     for (int i = 0; i < reads_; i++) {
       char key[100];
       const int k = thread->rand.Next() % FLAGS_num;
@@ -844,8 +845,9 @@ class Benchmark {
       if (db_->Get(options, key, &value).ok()) {
         found++;
       }
+      bytes += strlen(key) + value_size_;
       #ifdef SUBTREE
-      int k1 = k + (1<<27) - 1;
+      int k1 = k + (1<<24) - 1;
       int c = 0;
       while (k1) {
         if(k1%2) k1 = k1+1;
@@ -862,6 +864,7 @@ class Benchmark {
     char msg[100];
     snprintf(msg, sizeof(msg), "(%d of %d found)", found, num_);
     thread->stats.AddMessage(msg);
+    thread->stats.AddBytes(bytes);
   }
 
   void ReadMissing(ThreadState* thread) {
