@@ -1151,7 +1151,6 @@ Status DBImpl::Get(const ReadOptions& options,
   } else {
     snapshot = versions_->LastSequence();
   }
-
   MemTable* mem = mem_;
   MemTable* imm = imm_;
   Version* current = versions_->current();

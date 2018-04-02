@@ -369,7 +369,6 @@ Status Version::Get(const ReadOptions& options,
       t.push_back(cur);
     }
     #endif
-    
     // Get the list of files to search in this level
     FileMetaData* const* files = &files_[level][0];
     if (level == 0) {
