@@ -1,6 +1,6 @@
-#Implementation and Experiment
+# Implementation and Experiment
 
-##Implementation
+##  Implementation
 ---
 
 
@@ -11,7 +11,7 @@ Specifically, at Level Zero, we augment each record with a hash digest field whi
 On the write path, the proof-store writes the hash head together with each key-value pair to the in-memory table. On the compaction path, the proof-store builds and embeds the Merkle B-trees in the newly created files. The proof-store also adds the root hashes for the newly created files to the manifest file. On the read path, if the answer is found in the in-memory table, the proof returns the full hash chain, if the answer is found in the on-disk files, the proof returns the full hash chain and the corresponding Merkle proofs. 
 
 
-##Experiment
+##  Experiment
 ---
 
 ### 1, Storage Size 
