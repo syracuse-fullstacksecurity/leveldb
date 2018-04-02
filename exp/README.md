@@ -15,5 +15,5 @@ On the write path, the proof-store writes the hash head together with each key-v
 Experiment
 ---
 
-1, Storage Size 
+### 1, Storage Size 
 
