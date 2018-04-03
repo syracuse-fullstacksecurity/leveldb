@@ -1,7 +1,7 @@
 # Experiment Results
 
 
-## Microbench Experiments
+## Microbench Experiments (db_bench)
 
 
 ### Storage Overhead
@@ -24,3 +24,13 @@ Run the below command to generate the graph (single_read.ps, single_write.ps) in
 ./single_write.py
 ```
 
+#### Multi Thread
+
+This experiment compares the read/write latency and throughput for three implementation in a multi-thread setting.
+Run the below command to generate the graph (multi_read.ps, multi_write.ps, multi_read_thru.ps, multi_write_thru.ps) in the same directory.
+```
+./multi_read.py
+./multi_write.py
+./multi_read_thru.py
+./multi_write_thru.py
+```
