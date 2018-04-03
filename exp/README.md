@@ -34,3 +34,14 @@ Run the below command to generate the graph (multi_read.ps, multi_write.ps, mult
 ./multi_read_thru.py
 ./multi_write_thru.py
 ```
+
+### Record size impact
+
+This experiment study the value size impacts on the performance of the LPAD design.
+```
+./single_read_vsize.py
+./single_write_vsize.py
+./multi_read_vsize.py
+./multi_write_vsize.py
+```
+
