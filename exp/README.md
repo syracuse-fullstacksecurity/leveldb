@@ -45,3 +45,24 @@ This experiment study the value size impacts on the performance of the LPAD desi
 ./multi_write_vsize.py
 ```
 
+## YCSB benchmark 
+
+
+### Server Side
+This experiment studies the performance characteristics under YCSB workloads with varying write/read ratioes. The experiments are done in memory intensive workloads and disk intensive workloads.
+
+```
+ycsb_mem.dat
+ycsb_disk.dat
+```
+
+### Client side
+
+This experiment studies the performance of the client side's verification.
+
+```
+ycsb_fe.dat
+```
+
+
+

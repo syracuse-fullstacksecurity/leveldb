@@ -1,0 +1,27 @@
+Baseline
+Write percentage	Latency (micro-seconds)
+0	0
+20	0
+40	0
+60	0
+80	0
+100	0
+
+LPAD
+Write percentage	Latency (micro-seconds)
+0	4908
+20	4000
+40	3025
+60	2160
+80	1170
+100	211
+
+
+B-tree
+Write percentage	Latency (micro-seconds)
+0	4894
+20	4839
+40	4769
+60	4765
+80	4718
+100	4789
