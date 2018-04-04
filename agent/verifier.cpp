@@ -29,27 +29,27 @@ int agent_init() {
   std::cout << status.ToString() << std::endl;
    
 
-  gSTATE.last = 0 ;     // the global seq is 0
-  gSTATE.mem_ts_start = -1;  // -1 means untitialized
-  gSTATE.mem_ts_end = -1;
-  gSTATE.imm_ts_start = -1;
-  gSTATE.imm_ts_end = -1;
-  gSTATE.mem = new DIGEST;  // digest for memory portion
-  gSTATE.imm= NULL;  // digest for immutable portion
+//  gSTATE.last = 0 ;     // the global seq is 0
+//  gSTATE.mem_ts_start = -1;  // -1 means untitialized
+//  gSTATE.mem_ts_end = -1;
+//  gSTATE.imm_ts_start = -1;
+//  gSTATE.imm_ts_end = -1;
+//  gSTATE.mem = new DIGEST;  // digest for memory portion
+//  gSTATE.imm= NULL;  // digest for immutable portion
 }
 
 int agent_put(const std::string &key, const std::string &value) {
-  pthread_mutex_lock(&vmu);
-  db->Put(wo,key,value);
-  std::cout << "put: key=" << key << " and vlaue= "<< value <<std::endl;
-  pthread_mutex_unlock(&vmu);
+//  pthread_mutex_lock(&vmu);
+//  db->Put(wo,key,value);
+//  std::cout << "put: key=" << key << " and vlaue= "<< value <<std::endl;
+//  pthread_mutex_unlock(&vmu);
 }
 
 int agent_get(const std::string &key, std::string *value) {
-  pthread_mutex_lock(&vmu);
-  db->Get(ro,key,value);
-  std::cout << "get: key=" << key << " and vlaue= "<< *value <<std::endl;
-  pthread_mutex_unlock(&vmu);
+//  pthread_mutex_lock(&vmu);
+//  db->Get(ro,key,value);
+//  std::cout << "get: key=" << key << " and vlaue= "<< *value <<std::endl;
+//  pthread_mutex_unlock(&vmu);
 }
 
 int verifier_flip_mem() {

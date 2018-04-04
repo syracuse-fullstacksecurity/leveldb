@@ -1174,9 +1174,6 @@ Status DBImpl::Get(const ReadOptions& options,
       std::vector<IRECORD> pfBlock;
       std::vector<DIGEST> pfFile;
       s = current->Get(options, lkey, value, &stats, &pfBlock, &pfFile);
-      #ifdef SUSEC
-      verifier_get(key,*value,pfBlock,pfFile);
-      #endif
       have_stat_update = true;
     }
     mutex_.Lock();
@@ -1531,10 +1528,7 @@ DB::~DB() { }
 Status DB::Open(const Options& options, const std::string& dbname,
                 DB** dbptr) {
   *dbptr = NULL;
-  #ifdef SUSEC
-  verifier_init();
-  #endif
-  DBImpl* impl = new DBImpl(options, dbname);
+    DBImpl* impl = new DBImpl(options, dbname);
   impl->mutex_.Lock();
   VersionEdit edit;
   // Recover handles create_if_missing, error_if_exists
