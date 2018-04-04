@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-I../include -fPIC -g 
+CFLAGS=-I../include -fPIC -g  
 %.o : %.cpp
-	$(CC) $(CFLAGS) -c $< -o $@ -std=c++11 
+	$(CC) $(CFLAGS) -c $< -lleveldb -lpthread -o $@  
 
 verifier: verifier.o sim.o sha3.o sha1.o
 	$(CC) $^ -o $@ -shared 

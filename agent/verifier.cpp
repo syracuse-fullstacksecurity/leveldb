@@ -1,12 +1,18 @@
-#include "../include/verifier.h"
-#include "../include/sha3.h"
+#include "verifier.h"
+#include "sha3.h"
 #include <iostream>
 #include <algorithm>
 #include <stdio.h>
-#include <thread>
-#include <chrono>
+#include "leveldb/db.h"
+
+
+//global state
 STATE gSTATE;
 pthread_mutex_t vmu;
+leveldb::DB* db;
+leveldb::ReadOptions ro;
+leveldb::WriteOptions wo;
+
 int pc = 0;
 int rc = 0;
 int main() {
@@ -15,18 +21,34 @@ int main() {
 
 int agent_init() {
   pthread_mutex_init(&vmu, NULL);
+
+  //open database
+  leveldb::Options options;
+  options.create_if_missing = true;
+  leveldb::Status status = leveldb::DB::Open(options,"/tmp/aprilfour",&db);
+  std::cout << status.ToString() << std::endl;
+   
+
+  gSTATE.last = 0 ;     // the global seq is 0
+  gSTATE.mem_ts_start = -1;  // -1 means untitialized
+  gSTATE.mem_ts_end = -1;
+  gSTATE.imm_ts_start = -1;
+  gSTATE.imm_ts_end = -1;
+  gSTATE.mem = new DIGEST;  // digest for memory portion
+  gSTATE.imm= NULL;  // digest for immutable portion
 }
 
-int agent_put() {
+int agent_put(const std::string &key, const std::string &value) {
   pthread_mutex_lock(&vmu);
-  std::thread::id this_id = std::this_thread::get_id();
-  std::cout << "agent_put " << ++pc << " from thread=" << this_id << std::endl;
+  db->Put(wo,key,value);
+  std::cout << "put: key=" << key << " and vlaue= "<< value <<std::endl;
   pthread_mutex_unlock(&vmu);
 }
 
-int agent_get() {
+int agent_get(const std::string &key, std::string *value) {
   pthread_mutex_lock(&vmu);
-//  printf("agent_get %d\n",++rc);
+  db->Get(ro,key,value);
+  std::cout << "get: key=" << key << " and vlaue= "<< *value <<std::endl;
   pthread_mutex_unlock(&vmu);
 }
 
@@ -43,20 +65,6 @@ int verifier_flip_mem() {
   gSTATE.imm = gSTATE.mem;
   gSTATE.mem = new DIGEST;
 }
-
-int verifier_init() {
-
-/*
-  gSTATE.last = 0 ;
-  gSTATE.mem_ts_start = -1;
-  gSTATE.mem_ts_end = -1;
-  gSTATE.imm_ts_start = -1;
-  gSTATE.imm_ts_end = -1;
-  gSTATE.mem = new DIGEST;
-  gSTATE.imm= NULL;
-*/
-}
-
 
 int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
   //assert(seq==gSTATE.last+1);
