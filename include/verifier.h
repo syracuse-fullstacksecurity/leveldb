@@ -28,6 +28,9 @@ typedef struct irecord {
   //std::string key;
   std::string value;
 } IRECORD, *pIRECORD;
+int agent_init();
+int agent_get();
+int agent_put();
 
 int verifier_init();
 int verifier_flip_mem();

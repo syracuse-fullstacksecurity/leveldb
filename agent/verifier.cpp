@@ -3,10 +3,31 @@
 #include <iostream>
 #include <algorithm>
 #include <stdio.h>
+#include <thread>
+#include <chrono>
 STATE gSTATE;
-
+pthread_mutex_t vmu;
+int pc = 0;
+int rc = 0;
 int main() {
   return 0;
+}
+
+int agent_init() {
+  pthread_mutex_init(&vmu, NULL);
+}
+
+int agent_put() {
+  pthread_mutex_lock(&vmu);
+  std::thread::id this_id = std::this_thread::get_id();
+  std::cout << "agent_put " << ++pc << " from thread=" << this_id << std::endl;
+  pthread_mutex_unlock(&vmu);
+}
+
+int agent_get() {
+  pthread_mutex_lock(&vmu);
+//  printf("agent_get %d\n",++rc);
+  pthread_mutex_unlock(&vmu);
 }
 
 int verifier_flip_mem() {
@@ -24,6 +45,8 @@ int verifier_flip_mem() {
 }
 
 int verifier_init() {
+
+/*
   gSTATE.last = 0 ;
   gSTATE.mem_ts_start = -1;
   gSTATE.mem_ts_end = -1;
@@ -31,9 +54,13 @@ int verifier_init() {
   gSTATE.imm_ts_end = -1;
   gSTATE.mem = new DIGEST;
   gSTATE.imm= NULL;
+*/
 }
+
+
 int verifier_put(const Slice& key, unsigned long seq, const Slice& value) {
   //assert(seq==gSTATE.last+1);
+  
   gSTATE.last = seq;
   if (gSTATE.mem_ts_start == -1) {
     gSTATE.mem_ts_start = seq;
