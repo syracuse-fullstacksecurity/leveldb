@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from collections import namedtuple
+from matplotlib.patches import Ellipse, Polygon
 
 
 n_groups = 2
@@ -22,19 +23,26 @@ opacity = 0.4
 error_config = {'ecolor': '0.3'}
 
 rects1 = ax.bar(index, means_baseline, bar_width,
-                alpha=opacity, color='b',
+                color = 'white', edgecolor='black',
                  error_kw=error_config,
                 label='Baseline')
 
 rects2 = ax.bar(index + bar_width, means_lpad, bar_width,
-                alpha=opacity, color='r',
+                color = 'white', edgecolor='black',
                  error_kw=error_config,
                 label='LPAD')
 
 rects3 = ax.bar(index + bar_width + bar_width, means_btree, bar_width,
-                alpha=opacity, color='y',
+                color = 'white', edgecolor='black',
                  error_kw=error_config,
-                label='B-tree')
+                label='B-tree');
+
+for bar in rects1.get_children():
+	bar.set_hatch("-");
+for bar in rects2.get_children():
+	bar.set_hatch("o");
+for bar in rects3.get_children():
+	bar.set_hatch("*");
 
 ax.set_xlabel('Number of records (16-byte key, 100-byte)')
 ax.set_ylabel('Storage Size')
@@ -44,5 +52,5 @@ ax.set_xticklabels(('100 million', '1 million'))
 ax.legend()
 
 #fig.tight_layout()
-#plt.show()
+plt.show()
 plt.savefig('storage.ps')

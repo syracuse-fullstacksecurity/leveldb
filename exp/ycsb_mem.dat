@@ -1,14 +1,5 @@
-Baseline
-Write percentage	Latency (micro-seconds)
-0	1480
-20	1355
-40	1313
-60	1181
-80	1174
-100	1283
-
 LPAD
-Write percentage	Latency (micro-seconds)
+Write percentages (%)	Latency (micro-seconds)
 0	3824
 20	3625
 40	3424
@@ -17,11 +8,21 @@ Write percentage	Latency (micro-seconds)
 100	2686
 
 
-B-tree
-Write percentage	Latency (micro-seconds)
+B-tree (Baseline)
+Write percentages (%)	Latency (micro-seconds)
 0	5600
 20	7231
 40	8192
 60	14512
 80	16452
 100	18200
+
+Unsecure LevelDB (Ideal)
+Write percentages (%)	Latency (micro-seconds)
+0	1480
+20	1355
+40	1313
+60	1181
+80	1174
+100	1283
+

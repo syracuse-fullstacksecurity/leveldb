@@ -35,6 +35,12 @@ rects3 = ax.bar(index + bar_width + bar_width, means_btree, bar_width,
                 alpha=opacity, color='y',
                  error_kw=error_config,
                 label='B-tree')
+for bar in rects1.get_children():
+        bar.set_hatch("-");
+for bar in rects2.get_children():
+        bar.set_hatch("o");
+for bar in rects3.get_children():
+        bar.set_hatch("*");
 
 ax.set_xlabel('Number of records (16-byte key, 100-byte)')
 ax.set_ylabel('Latency (micro-seconds)')
@@ -44,5 +50,5 @@ ax.set_xticklabels(('100 million', '1 million'))
 ax.legend()
 
 #fig.tight_layout()
-#plt.show()
+plt.show()
 plt.savefig('single_write.ps')
