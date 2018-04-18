@@ -38,11 +38,13 @@ rects3 = ax.bar(index + bar_width + bar_width, means_btree, bar_width,
                 label='B-tree');
 
 for bar in rects1.get_children():
-	bar.set_hatch("-");
+#	bar.set_hatch("-");
+        bar.set_facecolor("black");
 for bar in rects2.get_children():
-	bar.set_hatch("o");
+#	bar.set_hatch("o");
+        bar.set_facecolor("grey");
 for bar in rects3.get_children():
-	bar.set_hatch("*");
+	bar.set_hatch("//");
 
 ax.set_xlabel('Number of records (16-byte key, 100-byte)')
 ax.set_ylabel('Storage Size')
