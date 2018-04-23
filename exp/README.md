@@ -1,4 +1,14 @@
-# Experiment Results
+Show the results
+---
+
+
+```bash
+cd exp
+./run.sh
+```
+
+
+# (JU) Experiment Results
 
 ## Microbench: Server-side,LPAD/TPAD
 

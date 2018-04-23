@@ -24,7 +24,7 @@ error_config = {'ecolor': '0.3'}
 rects1 = ax.bar(index, means_baseline, bar_width,
                 color='white', edgecolor='black',
                  error_kw=error_config,
-                label='Baseline')
+                label='Ideal')
 
 rects2 = ax.bar(index + bar_width, means_lpad, bar_width,
                 color='white', edgecolor='black',
@@ -52,5 +52,5 @@ ax.set_xticklabels(('100 bytes', '1000 bytes'))
 ax.legend()
 
 #fig.tight_layout()
-plt.show()
+#plt.show()
 plt.savefig('single_write_vsize.ps')
