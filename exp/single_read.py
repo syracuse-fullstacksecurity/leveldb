@@ -7,11 +7,11 @@ from collections import namedtuple
 
 n_groups = 2
 
-means_baseline = (524.815,5.713)
+means_baseline = (5.713,524.815)
 
-means_lpad = (637.837,16.839)
+means_lpad = (16.839,637.837)
 
-means_btree = (981.21,126.817)
+means_btree = (126.817,981.21)
 
 fig, ax = plt.subplots()
 
@@ -48,7 +48,7 @@ ax.set_xlabel('Number of records (16-byte key, 100-byte)')
 ax.set_ylabel('Latency (micro-seconds)')
 ax.set_title('Single thread read latency')
 ax.set_xticks(index + bar_width)
-ax.set_xticklabels(('100 million', '1 million'))
+ax.set_xticklabels(('1 million','100 million'))
 ax.legend()
 
 #fig.tight_layout()

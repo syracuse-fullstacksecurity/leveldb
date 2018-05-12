@@ -1,0 +1,7 @@
+*.pdf
+*.eps
+*.swp
+*.swo
+
+#auto-generated
+plottable/unalign.dat

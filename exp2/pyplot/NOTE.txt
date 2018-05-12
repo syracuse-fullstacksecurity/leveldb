@@ -1,0 +1,27 @@
+uncomment FORDEBUG line for quick code understanding and debugging.
+
+:data file format:
+see data_to_read.dat file
+#now we tolerate multi newlines
+# >1 newlines between series.
+# >=0 newlines at the begin of file.
+# >=0 newlines at the end of file.
+#all X values are the same, across different series.
+#all metric names are the same, across different series.
+#unit name is optional, both "Metric3(unit3)" and "Metric3" are acceptable.
+#UPDATE:now it support series of different number of x points.
+#series label can be 'null', if there is only one series.
+#UPDATE: now it support error bar
+#if a column is with err, the null value must be appended (with |) with sth! 
+
+:pyplot.py configuration:
+configurable_scaling: how many x tick marks among which one get shown the value?
+
+:python
+OR is: or, rather than ||
+AND is: and, rather than &&
+NEGATE is: not, rather than !=
+
+python is typed, like use str(int) to convert int to string
+
+readlines() move read iterator to EOF
