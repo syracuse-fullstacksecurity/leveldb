@@ -46,11 +46,11 @@ for bar in rects2.get_children():
 for bar in rects3.get_children():
 	bar.set_hatch("//");
 
-ax.set_xlabel('Number of records (16-byte key, 100-byte)')
+ax.set_xlabel('Number of records')
 ax.set_ylabel('Storage Size')
-ax.set_title('Storage size comparison')
+ax.set_title('Storage size comparison (Single record size: 116 bytes)')
 ax.set_xticks(index + bar_width)
-ax.set_xticklabels(('1 million', '100 million'))
+ax.set_xticklabels(('100 million', '1000 million'))
 ax.legend()
 
 #fig.tight_layout()
