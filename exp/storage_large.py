@@ -8,11 +8,11 @@ from matplotlib.patches import Ellipse, Polygon
 
 n_groups = 2
 
-means_baseline = (15,16.82)
+means_baseline = (1.8,17.64)
 
-means_lpad = (17,17.29)
+means_lpad = (2.2,18.14)
 
-means_btree = (23.5,18.01)
+means_btree = (2.9,18.96)
 
 fig, ax = plt.subplots()
 
@@ -50,7 +50,7 @@ ax.set_xlabel('Record size')
 ax.set_ylabel('Storage Size (GB)')
 ax.set_title('Storage size comparison')
 ax.set_xticks(index + bar_width)
-ax.set_xticklabels(('116 bytes', '1106 bytes'))
+ax.set_xticklabels(('116 bytes', '1160 bytes'))
 ax.legend()
 
 #fig.tight_layout()
