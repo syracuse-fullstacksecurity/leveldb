@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python2
 import numpy as np
 import matplotlib.pyplot as plt
 c_1 = np.array([[1.102, 1.096],
@@ -14,7 +14,7 @@ ind = np.arange(2)
 width = 0.2    
 f,ax = plt.subplots()
 #f.subplots_adjust(bottom=0.2) #make room for the legend
-plt.yticks(np.arange(0,42,2))
+plt.yticks(np.arange(0,42,10))
 plt.xticks([0,0.25,1,1.25], ('LPAD (SHA1)', 'B-tree (SHA1)','LPAD (No hash)','B-tree (No hash)'))
 plt.suptitle('Write cost breakdown')
 p = [] # list of bar properties
