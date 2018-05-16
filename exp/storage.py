@@ -48,7 +48,7 @@ for bar in rects3.get_children():
 
 ax.set_xlabel('Number of records')
 ax.set_ylabel('Normalized Storage Size')
-ax.set_title('Storage size comparison (Single record size: 116 bytes)')
+ax.set_title('Storage size comparison (record size: 116 bytes)')
 ax.set_xticks(index + bar_width)
 ax.set_xticklabels(('100 million', '1000 million'))
 ax.legend()
