@@ -40,4 +40,5 @@ f.legend(((x[0] for x in p)), # bar properties
 bbox_to_anchor=(0.5, 0), 
 loc='lower center',
 ncol=3)
-plt.show()
+#plt.show()
+plt.savefig("write_breakdown_recordsize.ps");

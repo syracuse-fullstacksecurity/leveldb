@@ -12,7 +12,7 @@ plt.xlabel('Throughput(Ops/sec)')
 plt.ylabel('Latency(usec)')
 #plt.annotate('T=2', xy=(0.55,0.45), xycoords='axes fraction')
 plt.legend( [ideal,lpad], ['Unsecure (Ideal)','LPAD'], loc='best' )
-plt.show()
+#plt.show()
 #plt.savefig('/Users/chenju2k6/Downloads/plot_figure/zipfian_newtpad.ps')
 
 

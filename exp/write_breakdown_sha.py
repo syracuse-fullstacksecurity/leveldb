@@ -15,7 +15,7 @@ width = 0.2
 f,ax = plt.subplots()
 #f.subplots_adjust(bottom=0.2) #make room for the legend
 plt.yticks(np.arange(0,42,10))
-plt.xticks([0,0.25,1,1.25], ('LPAD (SHA1)', 'B-tree (SHA1)','LPAD (No hash)','B-tree (No hash)'))
+plt.xticks([0,0.25,1,1.25], ('LPAD (SHA1)', 'SingleMT (SHA1)','LPAD (No hash)','SingleMT (No hash)'))
 plt.suptitle('Write cost breakdown')
 p = [] # list of bar properties
 def create_subplot(matrix, matrix2, colors, hatches,axis, title):
@@ -40,4 +40,5 @@ f.legend(((x[0] for x in p)), # bar properties
 bbox_to_anchor=(0.5, 0), 
 loc='lower center',
 ncol=3)
-plt.show()
+#plt.show()
+plt.savefig("write_breakdown_sha.ps");

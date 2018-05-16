@@ -54,5 +54,5 @@ ax.set_xticklabels(('100 million', '1000 million'))
 ax.legend()
 
 #fig.tight_layout()
-plt.show()
-#plt.savefig('storage.ps')
+#plt.show()
+plt.savefig('storage.ps')
