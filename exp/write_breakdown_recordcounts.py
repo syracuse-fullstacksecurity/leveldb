@@ -5,7 +5,7 @@ c_1 = np.array([[1.102, 1.103],
                     [0.063,0.064]]);
 c_1_colors = ['black', 'grey', 'white']
 c_1_hatches = ['', '', '//']
-c_1_labels = ['Data path', 'Proof preparation']
+c_1_labels = ['Data path', 'Security path']
 c_2 = np.array([[1.646,1.723],
                     [38.102,39.123]]);
 #c_2_colors = ['skyblue', 'brown', 'y', 'blue']
