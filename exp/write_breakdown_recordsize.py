@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 c_1 = np.array([[1.102, 1.302],
                     [0.063,0.21]]);
-c_1_colors = ['black', 'grey', 'white']
+c_1_colors = ['black', 'white']
 c_1_hatches = ['', '', '//']
 c_1_labels = ['Data path', 'Security path']
 c_2 = np.array([[1.646,10.109],
