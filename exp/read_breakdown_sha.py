@@ -5,7 +5,7 @@ c_1 = np.array([[2.874, 2.612],
                     [1.926,1.910],
                     [9.736,0.010]]);
 c_1_colors = ['black', 'grey', 'white']
-c_1_hatches = ['', '', '//']
+c_1_hatches = ['', '\\', '']
 c_1_labels = ['Data path', 'Proof preparation', 'Verification']
 c_2 = np.array([[1.700,1.700],
                     [8.906,8.906],
@@ -15,9 +15,10 @@ c_2 = np.array([[1.700,1.700],
 ind = np.arange(2)    
 width = 0.2    
 f,ax = plt.subplots()
-#f.subplots_adjust(bottom=0.2) #make room for the legend
+plt.gcf().subplots_adjust(bottom=0.2) #make room for the legend
 plt.yticks(np.arange(0,18,5))
-plt.xticks([0,0.25,1,1.25], ('LPAD (SHA1)', 'SingleMT (SHA1)','LPAD (No hash)','SingleMT (No hash)'))
+plt.xticks([0,0.125,0.25,1,1.125,1.25], ('LPAD','\n(SHA1)', 'SingleMT','LPAD','\n(No hash)','SingleMT'))
+plt.suptitle('Write cost breakdown')
 plt.suptitle('Read cost breakdown')
 p = [] # list of bar properties
 def create_subplot(matrix, matrix2, colors, hatches,axis, title):
@@ -39,7 +40,7 @@ ax.set_ylabel('Exection Time (micro-seconds)') # add left y label
 ax.set_ybound(0, 18) # add buffer at the top of the bars
 f.legend(((x[0] for x in p)), # bar properties
 (c_1_labels), 
-bbox_to_anchor=(0.5, 0), 
+bbox_to_anchor=(0.5, 0.8), 
 loc='lower center',
 ncol=3)
 plt.savefig('read_breakdown_sha.ps')

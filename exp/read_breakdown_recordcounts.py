@@ -17,7 +17,8 @@ width = 0.2
 f,ax = plt.subplots()
 #f.subplots_adjust(bottom=0.2) #make room for the legend
 plt.yticks(np.arange(0,18,5))
-plt.xticks([0,0.25,1,1.25], ('LPAD (1 million records)', 'SingleMT (1 million records)','LPAD (10 million records)','SingleMT (10 million  records)'))
+plt.xticks([0,0.125,0.25,1,1.125,1.25], ('LPAD','\n(1 million records)', 'SingleMT','LPAD','\n(10 million records)','SingleMT'))
+plt.suptitle('Write cost breakdown')
 plt.suptitle('Read cost breakdown')
 p = [] # list of bar properties
 def create_subplot(matrix, matrix2, colors, hatches,axis, title):
@@ -39,7 +40,7 @@ ax.set_ylabel('Exection Time (micro-seconds)') # add left y label
 ax.set_ybound(0, 18) # add buffer at the top of the bars
 f.legend(((x[0] for x in p)), # bar properties
 (c_1_labels), 
-bbox_to_anchor=(0.5, 0), 
+bbox_to_anchor=(0.5, 0.8), 
 loc='lower center',
 ncol=3)
 #plt.show()
