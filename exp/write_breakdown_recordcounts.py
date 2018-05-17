@@ -15,7 +15,7 @@ width = 0.2
 f,ax = plt.subplots()
 #f.subplots_adjust(bottom=0.2) #make room for the legend
 plt.yticks(np.arange(0,44,10))
-plt.xticks([0,0.25,1,1.25], ('LPAD (1 million records)', 'B-tree (1 million records)','LPAD (10 million records)','B-tree (10 million  records)'))
+plt.xticks([0,0.25,1,1.25], ('LPAD (1 million records)', 'SingleMT (1 million records)','LPAD (10 million records)','SingleMT (10 million  records)'))
 plt.suptitle('Write cost breakdown')
 p = [] # list of bar properties
 def create_subplot(matrix, matrix2, colors, hatches,axis, title):
