@@ -6,17 +6,16 @@ c_1 = np.array([[1.102,1.102,1.102],          #LPAD data standard standard stand
 c_1_colors = ['black','white']
 c_1_hatches = ['', '', '//']
 c_1_labels = ['Data path', 'Security path']
-c_2 = np.array([[1.096,1.302,1.103],
-                    [0.005,0.21,0.064]]);
+c_2 = np.array([[1.096,1.537,1.103],
+                    [0.005,1.641,0.064]]);
 #c_2_colors = ['skyblue', 'brown', 'y', 'blue']
 #c_2_labels = ['PAL Code', 'Bash', 'App', 'Kernel']
 ind = np.arange(3)    
 width = 0.2    
 f,ax = plt.subplots()
 #f.subplots_adjust(bottom=0.2) #make room for the legend
-plt.yticks(np.arange(0,2,0.5))
+plt.yticks(np.arange(0,4,1))
 plt.xticks([0,0.125,0.25,1,1.125,1.25,2,2.125,2.25], ('Yes','\nwith SHA1?', 'No','124','\nrecord size, bytes','1240', '1', '\nmillion records','10'))
-plt.suptitle('Write cost breakdown')
 plt.suptitle('Write cost breakdown')
 p = [] # list of bar properties
 def create_subplot(matrix, matrix2, colors, hatches,axis, title):
@@ -35,7 +34,7 @@ def create_subplot(matrix, matrix2, colors, hatches,axis, title):
 p.extend(create_subplot(c_1,c_2,c_1_colors, c_1_hatches,ax, '1'))
 ##p.extend(create_subplot(c_2,c_2_colors, ax[1], '2'))
 ax.set_ylabel('Exection Time (micro-seconds)') # add left y label
-ax.set_ybound(0, 2) # add buffer at the top of the bars
+ax.set_ybound(0, 4) # add buffer at the top of the bars
 f.legend(((x[0] for x in p)), # bar properties
 (c_1_labels), 
 bbox_to_anchor=(0.5, 0.8), 
