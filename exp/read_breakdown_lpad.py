@@ -9,7 +9,7 @@ c_1_hatches = ['', '', '//']
 c_1_labels = ['Data path', 'Proof preparation','Verification']
 c_2 = np.array([[2.612,3.936,3.102],
                     [1.910,2.464,2.011],
-                    [0.010,11.750,10.314]]);
+                    [0.010,11.750,12.405]]);
 #c_2_colors = ['skyblue', 'brown', 'y', 'blue']
 #c_2_labels = ['PAL Code', 'Bash', 'App', 'Kernel']
 ind = np.arange(3)    
