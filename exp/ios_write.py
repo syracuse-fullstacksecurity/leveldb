@@ -8,12 +8,9 @@ from matplotlib.patches import Ellipse, Polygon
 
 n_groups = 2
 
-means_baseline_read = (183159,1440376)
 
-means_lpad_read = (220856,1870110)
-
-means_baseline_write = (1527,28835)
-means_lpad_write = (1854,31328)
+means_baseline = (1527,28835)
+means_lpad = (1854,31328)
 
 fig, ax = plt.subplots()
 
@@ -33,10 +30,10 @@ rects2 = ax.bar(index + bar_width, means_lpad, bar_width,
                  error_kw=error_config,
                 label='LPAD')
 
-rects3 = ax.bar(index + bar_width + bar_width, means_btree, bar_width,
-                color = 'white', edgecolor='black',
-                 error_kw=error_config,
-                label='B-tree');
+#rects3 = ax.bar(index + bar_width + bar_width, means_btree, bar_width,
+#                color = 'white', edgecolor='black',
+ #                error_kw=error_config,
+  #              label='B-tree');
 
 for bar in rects1.get_children():
 #	bar.set_hatch("-");
@@ -44,8 +41,8 @@ for bar in rects1.get_children():
 for bar in rects2.get_children():
 #	bar.set_hatch("o");
         bar.set_facecolor("grey");
-for bar in rects3.get_children():
-	bar.set_hatch("//");
+#for bar in rects3.get_children():
+#	bar.set_hatch("//");
 
 ax.set_xlabel('Number of records')
 ax.set_ylabel('Number of IO syscalls')
@@ -56,4 +53,4 @@ ax.legend()
 
 #fig.tight_layout()
 #plt.show()
-plt.savefig('ios.ps')
+plt.savefig('ios_write.ps')
