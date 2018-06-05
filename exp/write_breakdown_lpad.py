@@ -2,11 +2,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 c_1 = np.array([[1.102,1.102,1.102],          #LPAD data standard standard standard
+                    [2.5,2.5,2.5],
                     [0.063,0.063,0.063]]);     #LPAD data standard standard standard
-c_1_colors = ['black','white']
+c_1_colors = ['black','grey','white']
 c_1_hatches = ['', '', '//']
-c_1_labels = ['Data path', 'Security path']
+c_1_labels = ['Data path', 'Boundary Crossing', 'Security path']
 c_2 = np.array([[1.096,1.537,1.103],
+                    [2.5,2.5,2.5],
                     [0.005,1.641,0.064]]);
 #c_2_colors = ['skyblue', 'brown', 'y', 'blue']
 #c_2_labels = ['PAL Code', 'Bash', 'App', 'Kernel']
@@ -34,7 +36,7 @@ def create_subplot(matrix, matrix2, colors, hatches,axis, title):
 p.extend(create_subplot(c_1,c_2,c_1_colors, c_1_hatches,ax, '1'))
 ##p.extend(create_subplot(c_2,c_2_colors, ax[1], '2'))
 ax.set_ylabel('Exection Time (micro-seconds)') # add left y label
-ax.set_ybound(0, 4) # add buffer at the top of the bars
+ax.set_ybound(0, 7) # add buffer at the top of the bars
 f.legend(((x[0] for x in p)), # bar properties
 (c_1_labels), 
 bbox_to_anchor=(0.5, 0.8), 

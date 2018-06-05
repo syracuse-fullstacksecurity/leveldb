@@ -46,7 +46,7 @@ for bar in rects2.get_children():
 
 ax.set_xlabel('Number of records')
 ax.set_ylabel('Number of IO syscalls')
-ax.set_title('Number of IO syscalls comparision (record size: 116 bytes)')
+ax.set_title('Number of Random File IO access comparision (record size: 116 bytes)')
 ax.set_xticks(index + bar_width)
 ax.set_xticklabels(('100 million', '1000 million'))
 ax.legend()
